@@ -47,9 +47,12 @@ public class RandomNPC extends VGDLSprite
         cons = 0;
         is_npc = true;
         is_stochastic = true;
+        is_oriented = true;
         counter = cons;
         prevAction = Types.DNONE;
     }
+
+
 
     protected Direction getRandomMove(Game game)
     {
@@ -72,6 +75,12 @@ public class RandomNPC extends VGDLSprite
         super.updatePassive();
         Direction act = getRandomMove(game);
         this.physics.activeMovement(this, act, this.speed);
+
+        if (physicstype == 0){
+            Vector2d dir = lastDirection();
+            dir.normalise();
+            orientation = new Direction(dir.x, dir.y);
+        }
     }
 
 

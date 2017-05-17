@@ -1,13 +1,15 @@
 BasicGame
   SpriteSet
-    floor > Immovable img=oryx/floor3 hidden=True
+    floor > Immovable img=oryx/backLBlue hidden=True
     goal  > Door color=GREEN img=oryx/doorclosed1
     sword > OrientedFlicker limit=5 singleton=True img=oryx/slash1
     movable >
       avatar  > ShootAvatar img=oryx/knight1  stype=sword
       enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
+      tank > Missile speed=0.1
+        tankR > img=newset/tank_blueR orientation=RIGHT
+        tankU > img=newset/tank_blue orientation=UP
 
-    protect > Immovable hidden=True invisible=True
     wall > Immovable img=oryx/wall3 autotiling=True
 
   LevelMapping
@@ -16,14 +18,20 @@ BasicGame
     e > floor enemy
     . > floor
     w > floor wall
+    t > floor tankR
+    o > floor tankU
 
   InteractionSet
-    wall TIME > spawn timer=300 repeating=True
-    movable wall EOS > stepBack
+    #wall tank > killAll stype=wall
+    wall tank > killSprite
+    #tank wall > killSprite
+    #tank EOS > killSprite
+    movable wall > stepBack
+    movable EOS > wrapAround
     goal avatar > killSprite scoreChange=1
     enemy sword > killSprite scoreChange=2
     enemy enemy > stepBack
-    avatar enemy > killSprite scoreChange=-1
+    avatar enemy tank > killSprite scoreChange=-1
 
   TerminationSet
     SpriteCounter stype=goal   win=True
