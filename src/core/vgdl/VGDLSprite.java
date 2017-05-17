@@ -622,6 +622,13 @@ public abstract class VGDLSprite {
         resources.put(resourceId, next);
     }
 
+    public void subtractResource(int resourceId, int amount_delta)
+    {
+        int prev = getAmountResource(resourceId);
+        int next = Math.max(0,prev - amount_delta);
+        resources.put(resourceId, next);
+    }
+
     /**
      * Removes all resources collected of the specified type.
      * @param resourceId - id of the resource whose quantity must be changed.
