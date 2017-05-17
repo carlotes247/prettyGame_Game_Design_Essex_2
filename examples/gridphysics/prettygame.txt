@@ -1,0 +1,30 @@
+BasicGame
+  SpriteSet
+    floor > Immovable img=oryx/floor3 hidden=True
+    goal  > Door color=GREEN img=oryx/doorclosed1
+    sword > OrientedFlicker limit=5 singleton=True img=oryx/slash1
+    movable >
+      avatar  > ShootAvatar img=oryx/knight1  stype=sword
+      enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
+
+    protect > Immovable hidden=True invisible=True
+    wall > Immovable img=oryx/wall3 autotiling=True
+
+  LevelMapping
+    g > floor goal
+    A > floor avatar
+    e > floor enemy
+    . > floor
+    w > floor wall
+
+  InteractionSet
+    wall TIME > spawn timer=300 repeating=True
+    movable wall EOS > stepBack
+    goal avatar > killSprite scoreChange=1
+    enemy sword > killSprite scoreChange=2
+    enemy enemy > stepBack
+    avatar enemy > killSprite scoreChange=-1
+
+  TerminationSet
+    SpriteCounter stype=goal   win=True
+    SpriteCounter stype=avatar win=False
