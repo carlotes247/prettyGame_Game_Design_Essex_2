@@ -3,7 +3,7 @@ BasicGame
     floor > Immovable img=oryx/backLBlue hidden=True
     goal  > Door color=GREEN img=oryx/doorclosed1
     movable >
-      avatar  > OrientedAvatar img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
+      avatar  > ShootAvatar stype=pro ammo=pickaxe img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
       enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
       tank > Missile speed=0.1
         tankR > img=newset/tank_blueR orientation=RIGHT
