@@ -3,8 +3,8 @@ BasicGame
     floor > Immovable img=oryx/backLBlue hidden=True
     goal  > Door color=GREEN img=oryx/doorclosed1
     movable >
-      avatar  > ShootAvatar stype=pro ammo=pickaxe img=oryx/knight1
-      enemy > RandomNPC cooldown=200 cons=6 img=oryx/bat1
+      avatar  > OrientedAvatar img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
+      enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
       tank > Missile speed=0.1
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
@@ -32,18 +32,14 @@ BasicGame
 
 
 
-    pro enemy > spawn stype=pickaxe
-    pro enemy > killSprite
-    enemy pro > killSprite
-
 
     pro wall > stepBack
     pro wall > reverseDirection
 
-
     pro floor > changeResource resource=flighttime value=1
     pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
     pro floor > killIfHasMore resource=flighttime limit=4
+
 
 
     avatar pickaxe > changeResource resource=pickaxe
@@ -58,7 +54,9 @@ BasicGame
 
     pro EOS > wrapAround
 
-
+    enemy pro > spawnBehind stype=pickaxe
+    pro enemy > killSprite
+    enemy pro > killSprite
 
 
 
