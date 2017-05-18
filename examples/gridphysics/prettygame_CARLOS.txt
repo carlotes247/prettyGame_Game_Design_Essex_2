@@ -1,0 +1,76 @@
+BasicGame
+  SpriteSet
+    floor > Immovable img=oryx/backLBlue hidden=True
+    goal  > Door color=GREEN img=oryx/doorclosed1
+    movable >
+      avatar  > ShootAvatar stype=pro ammo=pickaxe img=Link_NES_sliced/0 imgUp=Link_NES_sliced/2  imgDown=Link_NES_sliced/0 imgLeft=Link_NES_sliced/1 imgRight=Link_NES_sliced/3
+      enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
+      tank > Missile speed=0.1
+        tankR > img=newset/tank_blueR orientation=RIGHT
+        tankU > img=newset/tank_blue orientation=UP
+
+
+    flighttime > Resource value=1 limit=5
+    pro > Missile speed=1 img=oryx/pickaxe
+
+    wall > Immovable img=oryx/wall3 autotiling=True
+
+    pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
+
+  LevelMapping
+    g > floor goal
+    A > floor avatar
+    e > floor enemy
+    . > floor
+    w > floor wall
+    t > floor tankR
+    o > floor tankU
+    p > floor pickaxe
+
+  InteractionSet
+
+
+
+
+
+    pro wall > stepBack
+    pro wall > reverseDirection
+
+    pro floor > changeResource resource=flighttime value=1
+    pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
+    pro floor > killIfHasMore resource=flighttime limit=4
+
+
+
+    avatar pickaxe > changeResource resource=pickaxe
+    pickaxe avatar > killSprite
+    wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
+
+
+
+
+
+
+
+    pro EOS > wrapAround
+
+    enemy pro > spawn stype=pickaxe
+    pro enemy > killSprite
+    enemy pro > killSprite
+
+
+
+
+
+
+    wall tank > killSprite
+    movable wall > stepBack
+    movable EOS > wrapAround
+    goal avatar > killSprite scoreChange=1
+    enemy enemy > stepBack
+    avatar enemy tank > killSprite scoreChange=-1
+
+
+  TerminationSet
+    SpriteCounter stype=goal   win=True
+    SpriteCounter stype=avatar win=False

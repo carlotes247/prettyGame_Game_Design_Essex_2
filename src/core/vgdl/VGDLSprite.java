@@ -827,7 +827,7 @@ public abstract class VGDLSprite {
             System.out.println(orientation.getVector().toString());
 
             // Idle
-            if ( lastmove > 0 && orientation.equals(Types.DNONE)) {
+            if ( (lastmove > 0 && orientation.equals(Types.DNONE)) || (imageRight==null)) {
                 g.drawImage(image, trans, null);
             }
             // Right
@@ -850,9 +850,13 @@ public abstract class VGDLSprite {
 
             /* End of code added by carlos*/
 
-            g.setColor(arrowColor);
-            g.drawPolygon(p);
-            g.fillPolygon(p);
+            // We only draw the arrow if the directional sprites are null
+            if (imageRight == null) {
+                g.setColor(arrowColor);
+                g.drawPolygon(p);
+                g.fillPolygon(p);
+            }
+
 
         }
     }
