@@ -254,6 +254,26 @@ public abstract class VGDLSprite {
     public HashMap<Integer, Image> allImages;
 
     /**
+     * Dictionary for autoTiling UP
+     */
+    public HashMap<Integer, Image> allImagesUp;
+
+    /**
+     * Dictionary for autoTiling DOWN
+     */
+    public HashMap<Integer, Image> allImagesDown;
+
+    /**
+     * Dictionary for autoTiling LEFT
+     */
+    public HashMap<Integer, Image> allImagesLeft;
+
+    /**
+     * Dictionary for autoTiling RIGHT
+     */
+    public HashMap<Integer, Image> allImagesRight;
+
+    /**
      * String that represents the image in VGDL.
      */
     public String img;
@@ -405,6 +425,10 @@ public abstract class VGDLSprite {
         frameRemaining = 0;
         currentFrame = -1;
         allImages = new HashMap<Integer, Image>();
+        allImagesUp = new HashMap<Integer, Image>();
+        allImagesDown = new HashMap<Integer, Image>();
+        allImagesLeft = new HashMap<Integer, Image>();
+        allImagesRight = new HashMap<Integer, Image>();
         is_oriented = false;
         draw_arrow = false;
         orientation = Types.DNONE;
@@ -536,6 +560,15 @@ public abstract class VGDLSprite {
             currentFrame = (currentFrame + 1) % allImages.size();
             frameRemaining = frameRate;
             image = allImages.get(currentFrame);
+            // If there are any directional sprites...
+            if (imageUp != null) {
+                // Update the image for every direction
+                imageUp = allImagesUp.get(currentFrame);
+                imageDown = allImagesDown.get(currentFrame);
+                imageLeft = allImagesLeft.get(currentFrame);
+                imageRight = allImagesRight.get(currentFrame);
+            }
+
         }
     }
 
@@ -824,8 +857,6 @@ public abstract class VGDLSprite {
 
             /* Code added by Carlos*/
 
-            System.out.println(orientation.getVector().toString());
-
             // Idle
             if ( (lastmove > 0 && orientation.equals(Types.DNONE)) || (imageRight==null)) {
                 g.drawImage(image, trans, null);
@@ -1087,10 +1118,12 @@ public abstract class VGDLSprite {
     }
 
     /**
-     * Loads an image and RETURNS it
-     * @return an image object
+     * Loads an image and RETURNS it, specifying which animation sprite hasmap to use
+     * @param str name of the image to load
+     * @param imageAnimation the hashmap of the animation sprites
+     * @return
      */
-    public Image loadImageReturn(String str)
+    public Image loadImageReturn(String str, HashMap<Integer, Image> imageAnimation)
     {
         // The aux image that we will return
         Image imageAux = null;
@@ -1107,7 +1140,7 @@ public abstract class VGDLSprite {
                     do{
                         String currentFile = imagePath + i + ".png";
                         if((new File(currentFile).exists())) {
-                            allImages.put(i, ImageIO.read(new File(currentFile)));
+                            imageAnimation.put(i, ImageIO.read(new File(currentFile)));
                         }
                         else {
                             //System.out.println(currentFile);
@@ -1116,7 +1149,7 @@ public abstract class VGDLSprite {
                         }
                         i += 1;
                     }while(!noMoreFiles);
-                    imageAux = allImages.get(0);
+                    imageAux = imageAnimation.get(0);
                 }
                 else{
                     if (!(str.contains(".png"))) str = str + ".png";
@@ -1143,15 +1176,24 @@ public abstract class VGDLSprite {
     }
 
     /**
+     * Loads an image and RETURNS it
+     * @param str name of the image to load
+     * @return
+     */
+    public Image loadImageReturn(String str) {
+        return loadImageReturn(str, allImages);
+    }
+
+    /**
      * Loads all the images for the different directions
      */
     public void loadImages ()
     {
         // We attempt to load the different images for the sprites
-        imageUp = loadImageReturn(imgUp);
-        imageDown = loadImageReturn(imgDown);
-        imageLeft = loadImageReturn(imgLeft);
-        imageRight = loadImageReturn(imgRight);
+        imageUp = loadImageReturn(imgUp, allImagesUp);
+        imageDown = loadImageReturn(imgDown, allImagesDown);
+        imageLeft = loadImageReturn(imgLeft, allImagesLeft);
+        imageRight = loadImageReturn(imgRight, allImagesRight);
 
     }
 
@@ -1214,6 +1256,10 @@ public abstract class VGDLSprite {
         toSprite.draw_arrow = this.draw_arrow;
         toSprite.is_npc = this.is_npc;
         toSprite.allImages = this.allImages;
+        toSprite.allImagesUp = this.allImagesUp;
+        toSprite.allImagesDown = this.allImagesDown;
+        toSprite.allImagesLeft = this.allImagesLeft;
+        toSprite.allImagesRight = this.allImagesRight;
         toSprite.image = this.image;
         toSprite.imageUp = this.imageUp;
         toSprite.imageDown = this.imageDown;
