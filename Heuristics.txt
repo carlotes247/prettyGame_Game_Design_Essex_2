@@ -1,0 +1,12 @@
+- Interactor: moves towards all the other objects (interaction)
+- Avoider: avoids all other objects (interaction)
+- Explorer: explores as much as of the level as possible (position)
+- Lazy: avoid moving as much as possible (position)
+- Stubborn: favor doing the same action until they have to change (action)
+- Crazy: favor changing action all the time, no repeats (action)
+- Linear-Stubborn
+- Linear-Crazy
+
++ add game score and win/lose to all
+
+
