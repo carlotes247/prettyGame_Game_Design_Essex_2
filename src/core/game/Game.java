@@ -810,9 +810,9 @@ public abstract class Game {
 			this.is_stochastic = true;
 
 		if (itype == wallId) {
-			sprite.loadImage("wall.png");
+			sprite.loadImageReturn("wall.png");
 		} else if (itype == avatarId) {
-			sprite.loadImage("avatar.png");
+			sprite.loadImageReturn("avatar.png");
 		}
 	}
 

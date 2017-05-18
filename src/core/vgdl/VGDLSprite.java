@@ -222,6 +222,11 @@ public abstract class VGDLSprite {
      * Image of this sprite.
      */
     public Image image;
+
+    /**
+     * Array of Images of this sprite.
+     */
+    public Image[] images;
     
     /**
      * Dictionary for autoTiling
@@ -232,6 +237,26 @@ public abstract class VGDLSprite {
      * String that represents the image in VGDL.
      */
     public String img;
+
+    /**
+     * String that represents the images UP in VGDL
+     */
+    public String imgUp;
+
+    /**
+     * String that represents the images DOWN in VGDL
+     */
+    public String imgDown;
+
+    /**
+     * String that represents the images LEFT in VGDL
+     */
+    public String imgLeft;
+
+    /**
+     * String that represents the images RIGHT in VGDL
+     */
+    public String imgRight;
 
     /**
      * Indicates if this sprite is an NPC.
@@ -750,7 +775,7 @@ public abstract class VGDLSprite {
             Polygon p = Utils.triPoints(r, orientation);
 
             // Rotation information
-            
+
             if(shrinkfactor != 1)
             {
                 r.width *= shrinkfactor;
@@ -769,10 +794,33 @@ public abstract class VGDLSprite {
             trans.rotate(rotation,w/2.0,h/2.0);
             g.drawImage(image, trans, null);
 
+            /* Code added by carlos*/
+
+            System.out.println(orientation.toString());
+
+            // Right
+            if (orientation.getVector().x == 1) {
+
+            }
+            // Left
+            else if (orientation.getVector().x == -1) {
+
+            }
+            // Up
+            else if (orientation.getVector().y == 1) {
+
+            }
+            // Down
+            else if (orientation.getVector().y == -1) {
+
+            }
+
+            /* End of code added by carlos*/
+
             g.setColor(arrowColor);
-            //g.drawPolygon(p);
+            g.drawPolygon(p);
             g.fillPolygon(p);
-            
+
         }
     }
 
@@ -924,6 +972,8 @@ public abstract class VGDLSprite {
     {
     	loadImage(img);
 
+    	loadImages(imgs);
+
         if(!(this.orientation.equals(Types.DNONE)))
         {
             //Any sprite that receives an orientation, is oriented.
@@ -996,6 +1046,84 @@ public abstract class VGDLSprite {
                 //If no images are shown, it'll draw an coloured rectangle instead.
             }
         }
+    }
+
+    /**
+     * Loads an image and RETURNS it
+     * @return an image object
+     */
+    public Image loadImageReturn(String str)
+    {
+        // The aux image that we will return
+        Image imageAux = null;
+
+        if(imageAux == null && str != null)
+        {
+            //load image.
+            try {
+                if (this.autotiling || this.randomtiling >= 0 || this.frameRate >= 0){
+                    if (str.contains(".png")) str = str.substring(0, str.length() - 3);
+                    String imagePath = CompetitionParameters.IMG_PATH + str + "_";
+                    boolean noMoreFiles = false;
+                    int i = 0;
+                    do{
+                        String currentFile = imagePath + i + ".png";
+                        if((new File(currentFile).exists())) {
+                            allImages.put(i, ImageIO.read(new File(currentFile)));
+                        }
+                        else {
+                            //System.out.println(currentFile);
+                            //tempImage = ImageIO.read(this.getClass().getResource("/" + currentFile));
+                            noMoreFiles = true;
+                        }
+                        i += 1;
+                    }while(!noMoreFiles);
+                    imageAux = allImages.get(0);
+                }
+                else{
+                    if (!(str.contains(".png"))) str = str + ".png";
+                    String image_file = CompetitionParameters.IMG_PATH + str;
+                    if((new File(image_file).exists())) {
+                        imageAux = ImageIO.read(new File(image_file));
+                    }
+                    else {
+                        //System.out.println(image_file);
+                        imageAux = ImageIO.read(this.getClass().getResource("/" + image_file));
+                    }
+                }
+
+            } catch (IOException e) {
+                System.out.println("Image " + str + " could not be found.");
+                e.printStackTrace();
+            } catch (Exception e) {
+                //Ignore other exceptions.
+                //If no images are shown, it'll draw an coloured rectangle instead.
+            }
+        }
+        // We return the aux image
+        return imageAux;
+    }
+
+    /**
+     * Loads all the images for the images array
+     * @param str the array of names
+     */
+    public void loadImages (String[] str)
+    {
+        // If images is not defined, and the strings are not null...
+        if(images == null && str != null)
+        {
+            // We initialize the array of images
+            images = new Image[str.length];
+
+            // We go through the array of imgs
+            for (int i = 0; i < images.length ; i++) {
+                // We load the image and store it inside the array
+                images[i] = loadImageReturn(str[i]);
+            }
+        }
+
+
     }
 
     /**
