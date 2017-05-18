@@ -20,7 +20,9 @@ import tools.Vector2d;
  * Time: 18:10
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
-public class ShootAvatar extends OrientedAvatar
+public class
+
+ShootAvatar extends OrientedAvatar
 {
     static int MAX_WEAPONS = 5;
 

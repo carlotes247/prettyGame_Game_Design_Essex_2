@@ -979,7 +979,7 @@ public abstract class VGDLSprite {
     {
     	loadImage(img);
 
-    	loadImages(imgs);
+    	//loadImages(imgs);
 
         if(!(this.orientation.equals(Types.DNONE)))
         {
