@@ -22,6 +22,10 @@ BasicGame no_players=2
         proA >
         proB >
 
+    win > Immovable invisible=true
+        winA >
+        winB >
+
   LevelMapping
     g > floor goal
     A > floor avatarA
@@ -42,7 +46,9 @@ BasicGame no_players=2
     pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
     pro floor > killIfHasMore resource=flighttime limit=4
 
-
+    pro tank > killSprite
+    tank pro > spawn stype=pickaxe
+    tank pro > bounceForward
 
 
     avatar pickaxe > changeResource resource=pickaxe
@@ -61,11 +67,13 @@ BasicGame no_players=2
     wall tank > killSprite
     movable wall > stepBack
     movable EOS > wrapAround
-    goal avatar > killSprite scoreChange=1
+    goal avatarA > transformTo stype=winA
+    goal avatarB > transformTo stype=winB
     enemy enemy > stepBack
     avatar enemy tank > killSprite scoreChange=-1
 
   TerminationSet
-    SpriteCounter stype=goal   win=True,True
+    SpriteCounterMore stype=winA limit=1  win=True,False
+    SpriteCounterMore stype=winB limit=1   win=False,True
     SpriteCounter stype=avatarA win=False,False
     SpriteCounter stype=avatarB win=False,False
