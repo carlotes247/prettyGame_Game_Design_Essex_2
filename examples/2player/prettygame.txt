@@ -4,19 +4,12 @@ BasicGame no_players=2
     goal  > Door color=GREEN img=oryx/doorclosed1
 
     movable >
-<<<<<<< HEAD
-      avatar  > OrientedAvatar  speed=0.5
-        avatarA > img=oryx/knight1
-        avatarB > img=oryx/guard1
-      enemy > RandomNPC cooldown=2 cons=15 img=oryx/bat1 speed=0.5
-      tank > Missile speed=0.1
-=======
-      avatar  > OrientedAvatar img=oryx/knight1
+
+      avatar  > OrientedAvatar speed=0.5 img=oryx/knight1
         avatarA >
         avatarB >
       enemy > RandomNPC cooldown=2 cons=15 img=oryx/bat1 speed=0.2
       tank > Missile speed=0.01
->>>>>>> d533161d1946e6ccfea14c11cf848d0fe5cef98a
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
 

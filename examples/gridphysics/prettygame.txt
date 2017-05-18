@@ -32,14 +32,18 @@ BasicGame
 
 
 
+    pro enemy > spawn stype=pickaxe
+    pro enemy > killSprite
+    enemy pro > killSprite
+
 
     pro wall > stepBack
     pro wall > reverseDirection
 
+
     pro floor > changeResource resource=flighttime value=1
     pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
     pro floor > killIfHasMore resource=flighttime limit=4
-
 
 
     avatar pickaxe > changeResource resource=pickaxe
@@ -54,9 +58,7 @@ BasicGame
 
     pro EOS > wrapAround
 
-    enemy pro > spawnBehind stype=pickaxe
-    pro enemy > killSprite
-    enemy pro > killSprite
+
 
 
 
