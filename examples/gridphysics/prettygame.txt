@@ -28,7 +28,7 @@ BasicGame
 
     avatar pickaxe > changeResource resource=pickaxe
     pickaxe avatar > killSprite
-    wall avatar > killIfOtherHasMore resource=pickaxe limit=1
+    wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
 
     wall tank > killSprite
     movable wall > stepBack
