@@ -19,12 +19,13 @@ public class TestMultiPlayer {
 	String sampleMCTSController = "tracks.multiPlayer.advanced.sampleMCTS.Agent";
 	String sampleRSController = "tracks.multiPlayer.advanced.sampleRS.Agent";
 	String sampleRHEAController = "tracks.multiPlayer.advanced.sampleRHEA.Agent";
+	String prettyController = "tracks.multiPlayer.advanced.prettycontroller.Agent";
 
 	String humanController = "tracks.multiPlayer.tools.human.Agent";
 
 
 	// Set here the tracks used in the games (need 2 separated by space).
-	String controllers = humanController + " " + sampleMCTSController;
+	String controllers = humanController + " " + prettyController;
 	// String tracks = sampleMCTSController + " " + sampleMCTSController;
 
 	// Available games:
