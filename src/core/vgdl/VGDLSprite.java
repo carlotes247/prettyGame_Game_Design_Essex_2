@@ -824,7 +824,7 @@ public abstract class VGDLSprite {
 
             /* Code added by Carlos*/
 
-            System.out.println(lastmove);
+            System.out.println(orientation.getVector().toString());
 
             // Idle
             if ( lastmove > 0 && orientation.equals(Types.DNONE)) {
@@ -839,11 +839,11 @@ public abstract class VGDLSprite {
                 g.drawImage(imageLeft, trans, null);
             }
             // Up
-            else if (orientation.getVector().y == 1) {
+            else if (orientation.getVector().y == -1) {
                 g.drawImage(imageUp, trans, null);
             }
             // Down
-            else if (orientation.getVector().y == -1) {
+            else if (orientation.getVector().y == 1) {
                 g.drawImage(imageDown, trans, null);
             }
 
