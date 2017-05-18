@@ -54,7 +54,7 @@ BasicGame
 
     pro EOS > wrapAround
 
-    enemy pro > spawnBehind stype=pickaxe
+    enemy pro > spawn stype=pickaxe
     pro enemy > killSprite
     enemy pro > killSprite
 
