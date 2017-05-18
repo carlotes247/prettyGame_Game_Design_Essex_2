@@ -9,11 +9,13 @@ BasicGame
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
 
-    pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
+
     flighttime > Resource value=1 limit=5
     pro > Missile speed=1 img=oryx/pickaxe
 
     wall > Immovable img=oryx/wall3 autotiling=True
+
+    pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
 
   LevelMapping
     g > floor goal
@@ -27,6 +29,19 @@ BasicGame
 
   InteractionSet
 
+
+
+
+
+    pro wall > stepBack
+    pro wall > reverseDirection
+
+    pro floor > changeResource resource=flighttime value=1
+    pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
+    pro floor > killIfHasMore resource=flighttime limit=4
+
+
+
     avatar pickaxe > changeResource resource=pickaxe
     pickaxe avatar > killSprite
     wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
@@ -34,9 +49,8 @@ BasicGame
 
 
 
-    pro floor > changeResource resource=flighttime value=1
-    pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
-    pro floor > killIfHasMore resource=flighttime limit=4
+
+
 
     pro EOS > wrapAround
 
@@ -45,8 +59,7 @@ BasicGame
     enemy pro > killSprite
 
 
-    wall pro > spawnBehind stype=pickaxe
-    pro wall > killSprite
+
 
 
 
