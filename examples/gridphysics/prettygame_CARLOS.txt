@@ -3,7 +3,7 @@ BasicGame
     floor > Immovable img=oryx/backLBlue hidden=True
     goal  > Door color=GREEN img=oryx/doorclosed1
     movable >
-      avatar  > ShootAvatar stype=pro ammo=pickaxe img=Link_NES_sliced/down frameRate=8 imgUp=Link_NES_sliced/up framerate=8 imgDown=Link_NES_sliced/down frameRate=8 imgLeft=Link_NES_sliced/left frameRate=8 imgRight=Link_NES_sliced/right frameRate=8
+      avatar  > ShootAvatar stype=pro ammo=pickaxe speed=0.1 img=Link_NES_sliced/down frameRate=3 imgUp=Link_NES_sliced/up imgDown=Link_NES_sliced/down imgLeft=Link_NES_sliced/left imgRight=Link_NES_sliced/right
       enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
       tank > Missile speed=0.1
         tankR > img=newset/tank_blueR orientation=RIGHT

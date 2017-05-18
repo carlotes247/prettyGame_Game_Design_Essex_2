@@ -560,8 +560,8 @@ public abstract class VGDLSprite {
             currentFrame = (currentFrame + 1) % allImages.size();
             frameRemaining = frameRate;
             image = allImages.get(currentFrame);
-            // If there are any directional sprites...
-            if (imageUp != null) {
+            // If there are any directional sprites and we are moving...
+            if (imageUp != null && ((lastmove - 1) == 0)) {
                 // Update the image for every direction
                 imageUp = allImagesUp.get(currentFrame);
                 imageDown = allImagesDown.get(currentFrame);
