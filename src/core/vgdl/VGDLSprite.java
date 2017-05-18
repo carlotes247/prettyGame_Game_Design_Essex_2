@@ -824,7 +824,7 @@ public abstract class VGDLSprite {
 
             /* Code added by Carlos*/
 
-            System.out.println(lastmove);
+            //System.out.println(lastmove);
 
             // Idle
             if ( lastmove > 0 && orientation.equals(Types.DNONE)) {
