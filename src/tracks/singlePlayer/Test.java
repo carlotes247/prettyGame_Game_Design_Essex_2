@@ -64,7 +64,7 @@ public class Test {
 		boolean visuals = true;
 		int seed = new Random().nextInt();
 
-		games = new String[]{"prettygame"};
+		games = new String[]{"prettygame", "dummy"};
 
 		// Game and level to play
 		int gameIdx = 0;
@@ -78,10 +78,10 @@ public class Test {
 						// executed. null if not to save.
 
 		// 1. This starts a game, in a level, played by a human.
-		ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
+//		ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 		// 2. This plays a game in a level by the controller.
-//		ArcadeMachine.runOneGame(game, level1, visuals, sampleRHEAController, recordActionsFile, seed, 0);
+		ArcadeMachine.runOneGame(game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
 
 
 		// 3. This replays a game from an action file previously recorded
