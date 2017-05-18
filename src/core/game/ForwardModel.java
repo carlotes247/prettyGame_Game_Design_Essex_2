@@ -547,6 +547,11 @@ public class ForwardModel extends Game
     protected void updateAvatars(Types.ACTIONS action, int playerID)
     {
         MovingAvatar a = avatars[playerID];
+
+        int sameMove = (getAvatarLastAction(playerID) == action) ? 1 : 0;
+        int sameMoveBonus = 5;
+        a.addScore(sameMoveBonus*sameMove);
+
         if (!a.is_disabled()) {
             KeyHandler ki = a.getKeyHandler();
             ki.reset(playerID);
