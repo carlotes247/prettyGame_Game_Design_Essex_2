@@ -227,7 +227,27 @@ public abstract class VGDLSprite {
      * Array of Images of this sprite.
      */
     public Image[] images;
-    
+
+    /**
+     * Image of this sprite when is facing UP
+     */
+    public Image imageUp;
+
+    /**
+     * Image of this sprite when is facing DOWN
+     */
+    public Image imageDown;
+
+    /**
+     * Image of this sprite when is facing LEFT
+     */
+    public Image imageLeft;
+
+    /**
+     * Image of this sprite when is facing RIGHT
+     */
+    public Image imageRight;
+
     /**
      * Dictionary for autoTiling
      */
@@ -799,28 +819,34 @@ public abstract class VGDLSprite {
             trans.translate(r.x, r.y);
             trans.scale(scale,scale);
             trans.rotate(rotation,w/2.0,h/2.0);
-            g.drawImage(image, trans, null);
+            // Uncomment this line to have only one sprite
+            //g.drawImage(image, trans, null);
 
-            /* Code added by carlos*/
+            /* Code added by Carlos*/
 
-            System.out.println(orientation.toString());
+            System.out.println(lastmove);
 
+            // Idle
+            if ( lastmove > 0 && orientation.equals(Types.DNONE)) {
+                g.drawImage(image, trans, null);
+            }
             // Right
-            if (orientation.getVector().x == 1) {
-
+            else if (orientation.getVector().x == 1) {
+                g.drawImage(imageRight, trans, null);
             }
             // Left
             else if (orientation.getVector().x == -1) {
-
+                g.drawImage(imageLeft, trans, null);
             }
             // Up
             else if (orientation.getVector().y == 1) {
-
+                g.drawImage(imageUp, trans, null);
             }
             // Down
             else if (orientation.getVector().y == -1) {
-
+                g.drawImage(imageDown, trans, null);
             }
+
 
             /* End of code added by carlos*/
 
@@ -978,8 +1004,9 @@ public abstract class VGDLSprite {
     public void postProcess()
     {
     	loadImage(img);
+        //image = loadImageReturn(img);
 
-    	//loadImages(imgs);
+    	loadImages();
 
         if(!(this.orientation.equals(Types.DNONE)))
         {
@@ -1112,24 +1139,15 @@ public abstract class VGDLSprite {
     }
 
     /**
-     * Loads all the images for the images array
-     * @param str the array of names
+     * Loads all the images for the different directions
      */
-    public void loadImages (String[] str)
+    public void loadImages ()
     {
-        // If images is not defined, and the strings are not null...
-        if(images == null && str != null)
-        {
-            // We initialize the array of images
-            images = new Image[str.length];
-
-            // We go through the array of imgs
-            for (int i = 0; i < images.length ; i++) {
-                // We load the image and store it inside the array
-                images[i] = loadImageReturn(str[i]);
-            }
-        }
-
+        // We attempt to load the different images for the sprites
+        imageUp = loadImageReturn(imgUp);
+        imageDown = loadImageReturn(imgDown);
+        imageLeft = loadImageReturn(imgLeft);
+        imageRight = loadImageReturn(imgRight);
 
     }
 
@@ -1193,6 +1211,10 @@ public abstract class VGDLSprite {
         toSprite.is_npc = this.is_npc;
         toSprite.allImages = this.allImages;
         toSprite.image = this.image;
+        toSprite.imageUp = this.imageUp;
+        toSprite.imageDown = this.imageDown;
+        toSprite.imageLeft = this.imageLeft;
+        toSprite.imageRight = this.imageRight;
         toSprite.spriteID = this.spriteID;
         toSprite.is_from_avatar = this.is_from_avatar;
         toSprite.bucket = this.bucket;
