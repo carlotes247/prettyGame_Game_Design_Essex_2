@@ -1,13 +1,9 @@
-package tracks.multiPlayer.tools.heuristics;
+package tracks.multiPlayer.advanced.prettycontroller.heuristics;
 
 import core.game.Event;
-import core.game.Observation;
 import core.game.StateObservationMulti;
 import ontology.Types;
-import tools.Vector2d;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeSet;
 
 /**
@@ -24,8 +20,10 @@ public class InteractorHeuristic extends StateHeuristicMulti {
 
     private TreeSet<Integer> objects;
     private TreeSet<Integer> newObjects;
-    int playerID;
-    int playerType;
+    private int playerID;
+    private int playerType;
+
+    private int lastGameTick;
 
     public InteractorHeuristic(StateObservationMulti stateObs, int playerID) {
         objects = new TreeSet<>();
@@ -33,22 +31,26 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         newObjects.addAll(objects);
         this.playerID = playerID;
         if (stateObs != null) {
-            updateEvents(stateObs, objects);
+            updateEvents(stateObs, objects, 0);
             playerType = stateObs.getAvatarType(playerID);
         }
     }
 
     public void update(StateObservationMulti stateObs) {
-        updateEvents(stateObs, objects);
+        updateEvents(stateObs, objects, stateObs.getGameTick()-1);
     }
 
-    public void resetObjects() {
+    public void reset() {
         newObjects = new TreeSet<>();
         newObjects.addAll(objects);
     }
 
-    public double evaluateState(StateObservationMulti stateObs, int playerID) {
-        updateEvents(stateObs, newObjects);
+    public void setLastGameTick(int tick) {
+        lastGameTick = tick;
+    }
+
+    public double evaluateState(StateObservationMulti stateObs) {
+        updateEvents(stateObs, newObjects, lastGameTick);
 
         boolean gameOver = stateObs.isGameOver();
         Types.WINNER win = stateObs.getMultiGameWinner()[playerID];
@@ -67,12 +69,13 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         return rawScore;
     }
 
-    private void updateEvents(StateObservationMulti stateObs, TreeSet<Integer> objects) {
+    private void updateEvents(StateObservationMulti stateObs, TreeSet<Integer> objects, int lastGameTick) {
         if (stateObs != null) {
             for (Event e : stateObs.getEventsHistory()) {
-                //Interact with all sprites
-                objects.add(e.activeSpriteId);
-                objects.add(e.passiveSpriteId);
+                if (e.gameStep >= lastGameTick) {
+                    objects.add(e.activeSpriteId);
+                    objects.add(e.passiveSpriteId);
+                }
             }
         }
     }

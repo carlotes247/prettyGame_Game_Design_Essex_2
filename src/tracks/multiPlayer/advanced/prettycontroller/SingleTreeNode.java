@@ -1,11 +1,12 @@
 package tracks.multiPlayer.advanced.prettycontroller;
 
+import java.util.Random;
+
 import core.game.StateObservationMulti;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
-
-import java.util.Random;
+import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
 
 public class SingleTreeNode
 {
@@ -29,6 +30,7 @@ public class SingleTreeNode
     public int[] NUM_ACTIONS;
     public Types.ACTIONS[][] actions;
     public int id, oppID, no_players;
+    public static InteractorHeuristic heuristic;
 
     public StateObservationMulti rootState;
 
@@ -51,21 +53,29 @@ public class SingleTreeNode
         this.NUM_ACTIONS = NUM_ACTIONS;
         children = new SingleTreeNode[NUM_ACTIONS[id]];
         this.actions = actions;
+
     }
 
 
     public void mctsSearch(ElapsedCpuTimer elapsedTimer) {
+
+        heuristic = new InteractorHeuristic(rootState,id);
 
         double avgTimeTaken = 0;
         double acumTimeTaken = 0;
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
+        heuristic.update(rootState);
+
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
-        //while(numIters < Agent.MCTS_ITERATIONS){
+            //while(numIters < Agent.MCTS_ITERATIONS){
 
             StateObservationMulti state = rootState.copy();
+
+            heuristic.reset();
+            heuristic.setLastGameTick(state.getGameTick());
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             SingleTreeNode selected = treePolicy(state);
@@ -79,7 +89,8 @@ public class SingleTreeNode
             remaining = elapsedTimer.remainingTimeMillis();
         }
 
-        System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
+
+        //System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
     }
 
     public SingleTreeNode treePolicy(StateObservationMulti state) {
@@ -159,7 +170,7 @@ public class SingleTreeNode
         if (selected == null)
         {
             throw new RuntimeException("Warning! returning null: " + bestValue + " : " + this.children.length + " " +
-            + bounds[0] + " " + bounds[1]);
+                    + bounds[0] + " " + bounds[1]);
         }
 
         //Roll the state:
@@ -210,19 +221,19 @@ public class SingleTreeNode
 
     public double value(StateObservationMulti a_gameState) {
 
-        boolean gameOver = a_gameState.isGameOver();
+//        boolean gameOver = a_gameState.isGameOver();
+//
+//
+//        Types.WINNER win = a_gameState.getMultiGameWinner()[id];
+//        double rawScore = a_gameState.getGameScore(id);
+//
+//        if(gameOver && win == Types.WINNER.PLAYER_LOSES)
+//            rawScore += HUGE_NEGATIVE;
+//
+//        if(gameOver && win == Types.WINNER.PLAYER_WINS)
+//            rawScore += HUGE_POSITIVE;
 
-
-        Types.WINNER win = a_gameState.getMultiGameWinner()[id];
-        double rawScore = a_gameState.getGameScore(id);
-
-        if(gameOver && win == Types.WINNER.PLAYER_LOSES)
-            rawScore += HUGE_NEGATIVE;
-
-        if(gameOver && win == Types.WINNER.PLAYER_WINS)
-            rawScore += HUGE_POSITIVE;
-
-        return rawScore;
+        return heuristic.evaluateState(a_gameState);
     }
 
     public boolean finishRollout(StateObservationMulti rollerState, int depth)

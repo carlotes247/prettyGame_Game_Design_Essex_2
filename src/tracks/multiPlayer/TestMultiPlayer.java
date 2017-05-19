@@ -25,7 +25,7 @@ public class TestMultiPlayer {
 
 
 	// Set here the tracks used in the games (need 2 separated by space).
-	String controllers = humanController + " " + sampleMCTSController;
+	String controllers = humanController + " " + prettyController;
 	// String tracks = sampleMCTSController + " " + sampleMCTSController;
 
 	// Available games:
