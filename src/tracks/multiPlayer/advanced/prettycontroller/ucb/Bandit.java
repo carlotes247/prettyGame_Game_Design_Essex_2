@@ -40,6 +40,9 @@ public class Bandit {
     public Bandit(int arms) {
         nArms = arms;
         armPulls = new int[nArms];
+        for (int i = 0; i < nArms; i++) {
+            armPulls[i] = 1;
+        }
         deltaRewards = new double[nArms];
         allRewards = new ArrayList[nArms];
         for (int i=0; i<nArms; i++) {
@@ -51,9 +54,13 @@ public class Bandit {
     public void pullArm() {
         Picker<Integer> picker = new Picker<>(Picker.MAX_FIRST);
 
+//        for (int i = 0; i < nArms; i++) {
+//            System.out.println(deltaRewards[i] / armPulls[i]);
+//        }
+//        System.out.println();
+
+
         for (int i = 0; i < nArms; i++) {
-            // never choose the current value of x
-            // that would not be a mutation!!!
             if (i != x) {
                 double exploit = exploit(i);
                 double explore = explore(nPulls, armPulls[i]);
@@ -73,16 +80,22 @@ public class Bandit {
     // standard UCB Explore term
     // consider modifying a value that's not been changed much yet
     private double explore(int n, int nA) {
+        if(nA == 0) return 10000;
         return k * Math.sqrt(Math.log(n) / (nA));
     }
     private double exploit(int i) {
-        double value = deltaRewards[i];
-        if (STATIONARY) {
-            value = 0;
-            for (double d : allRewards[i]) {
-                value += d;
+        double value;
+        if (armPulls[i] == 0)
+            value = 10000;
+        else {
+            value = deltaRewards[i] / armPulls[i];
+            if (!STATIONARY) {
+                value = 0;
+                for (double d : allRewards[i]) {
+                    value += d;
+                }
+                value /= allRewards[i].size();
             }
-            value /= allRewards[i].size();
         }
         return value;
     }
@@ -106,7 +119,7 @@ public class Bandit {
 
     // returns true if reverting to old value
     public boolean revertOrKeep(double delta) {
-        if (delta < 0) {
+        if (delta/armPulls[x] < deltaRewards[xPrevious]/armPulls[xPrevious]) {
             x = xPrevious;
             return true;
         }

@@ -6,6 +6,9 @@ import tools.ElapsedCpuTimer;
 
 import java.util.Random;
 
+import static tracks.multiPlayer.advanced.prettycontroller.Agent.heuristic;
+import static tracks.multiPlayer.advanced.prettycontroller.Agent.ucb;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Diego
@@ -68,6 +71,12 @@ public class SingleMCTSPlayer
         //Determine the best action to take and return it.
         int action = m_root.mostVisitedAction();
         //int action = m_root.bestAction();
+
+        ucb.applyReward(m_root.bestReward);
+        if(ucb.revertOrKeep(m_root.bestReward)) {
+            heuristic = ucb.x;
+        }
+
         return action;
     }
 

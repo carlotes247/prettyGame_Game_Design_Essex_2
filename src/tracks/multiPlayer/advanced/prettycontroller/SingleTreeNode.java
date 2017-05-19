@@ -21,7 +21,7 @@ public class SingleTreeNode
     public int nVisits;
     public Random m_rnd;
     public int m_depth;
-    protected double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
+    protected static double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
     public int childIdx;
 
     public int MCTS_ITERATIONS = 100;
@@ -64,16 +64,8 @@ public class SingleTreeNode
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        switch (heuristic)
-        {
-            case HEURISTIC_INTERACT:
-            {
-                hInteract.setLastGameTick(rootState.getGameTick() - 1);
-                hInteract.update(rootState);
-                break;
-            }
-            default: break;
-        }
+        hInteract.setLastGameTick(rootState.getGameTick() - 1);
+        hInteract.update(rootState);
 
 
         int remainingLimit = 5;
@@ -212,16 +204,7 @@ public class SingleTreeNode
 
     void advance_state(StateObservationMulti state, Types.ACTIONS[] acts)
     {
-        switch (heuristic)
-        {
-            case HEURISTIC_STUBBORN:
-            {
-                heuristicStubborn.update(state, acts, m_depth);
-                break;
-            }
-            default: break;
-        }
-
+        heuristicStubborn.update(state, acts, m_depth);
         state.advance(acts);
     }
 
@@ -243,19 +226,10 @@ public class SingleTreeNode
 
 
         double delta = value(state);
-        double normDelta = Utils.normalise(delta, bounds[0], bounds[1]);
 
-        if(delta < bounds[0])
-            bounds[0] = delta;
-        if(delta > bounds[1])
-            bounds[1] = delta;
+//        System.out.println(delta);
 
-        ucb.applyReward(normDelta);
-        if(ucb.revertOrKeep(normDelta)) {
-            heuristic = ucb.x;
-        }
-
-        return normDelta;
+        return delta;
     }
 
     public double value(StateObservationMulti a_gameState) {
@@ -271,30 +245,31 @@ public class SingleTreeNode
             }
             case HEURISTIC_STUBBORN:
                 value += heuristicStubborn.evaluateState(a_gameState);
-                //fall-through
-            case HEURISTIC_DEFAULT:
-            {
-                boolean gameOver = a_gameState.isGameOver();
-                Types.WINNER win = a_gameState.getMultiGameWinner()[id];
-                value += a_gameState.getGameScore(id);
-
-                if (gameOver && win == Types.WINNER.PLAYER_LOSES)
-                    value += HUGE_NEGATIVE;
-
-                if (gameOver && win == Types.WINNER.PLAYER_WINS)
-                    value += HUGE_POSITIVE;
-
                 break;
-            }
+                //fall-through
             default: break;
         }
 
-        ucb.applyReward(value);
-        if(ucb.revertOrKeep(value)) {
-            heuristic = ucb.x;
-        }
 
-        return value;
+        boolean gameOver = a_gameState.isGameOver();
+        Types.WINNER win = a_gameState.getMultiGameWinner()[id];
+        Types.WINNER oppWin = a_gameState.getMultiGameWinner()[(id + 1) % a_gameState.getNoPlayers()];;
+        value += a_gameState.getGameScore(id);
+
+        double normDelta = Utils.normalise(value, bounds[0], bounds[1]);
+
+        if(value < bounds[0])
+            bounds[0] = value;
+        if(value > bounds[1])
+            bounds[1] = value;
+
+        if(gameOver && (win == Types.WINNER.PLAYER_LOSES || oppWin == Types.WINNER.PLAYER_WINS))
+            normDelta += HUGE_NEGATIVE;
+
+        if(gameOver && (win == Types.WINNER.PLAYER_WINS || oppWin == Types.WINNER.PLAYER_LOSES))
+            normDelta += HUGE_POSITIVE;
+
+        return normDelta;
     }
 
     public boolean finishRollout(StateObservationMulti rollerState, int depth)
@@ -315,16 +290,17 @@ public class SingleTreeNode
         {
             n.nVisits++;
             n.totValue += result;
-            if (result < n.bounds[0]) {
-                n.bounds[0] = result;
+            if (result < bounds[0]) {
+                bounds[0] = result;
             }
-            if (result > n.bounds[1]) {
-                n.bounds[1] = result;
+            if (result > bounds[1]) {
+                bounds[1] = result;
             }
             n = n.parent;
         }
     }
 
+    public double bestReward;
 
     public int mostVisitedAction() {
         int selected = -1;
@@ -361,6 +337,10 @@ public class SingleTreeNode
             //If all are equal, we opt to choose for the one with the best Q.
             selected = bestAction();
         }
+
+        bestReward = children[selected].totValue / children[selected].nVisits;
+        bestReward = Utils.normalise(bestReward, bounds[0], bounds[1]);
+
         return selected;
     }
 

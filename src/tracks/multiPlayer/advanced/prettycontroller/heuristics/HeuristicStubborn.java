@@ -31,8 +31,8 @@ public class HeuristicStubborn extends StateHeuristicMulti
     {
         int sameMove = (acts[playerID] == stateObs.getAvatarLastAction(playerID)) ? 1 : 0;
         int sameMoveBonus = 100;
-        int diffMoveBonus = -100;
-        int bonus = 0;
+        int diffMoveBonus = 0;
+        int bonus = 100;
 
         sameMoveBonus *= sameMove;
         diffMoveBonus *= (1-sameMove);
@@ -41,6 +41,7 @@ public class HeuristicStubborn extends StateHeuristicMulti
 
         intrinsicScore += sameMoveBonus/depthMulti;
         intrinsicScore += diffMoveBonus*depthMulti;
+        intrinsicScore += 100;
     }
 }
 
