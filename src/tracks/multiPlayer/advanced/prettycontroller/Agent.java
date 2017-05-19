@@ -76,6 +76,10 @@ public class Agent extends AbstractMultiPlayer {
         //Determine the action using MCTS...
         int action = mctsPlayer.run(elapsedTimer);
 
+//        int sameMove = (getAvatarLastAction(playerID) == action) ? 1 : 0;
+//        int sameMoveBonus = 10;
+//        addScore(sameMoveBonus*sameMove);
+
         //... and return it.
         return actions[id][action];
     }

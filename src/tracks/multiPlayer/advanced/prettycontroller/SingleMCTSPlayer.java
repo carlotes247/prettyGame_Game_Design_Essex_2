@@ -20,6 +20,7 @@ public class SingleMCTSPlayer
      * Root of the tree.
      */
     public SingleTreeNode m_root;
+    public int intrinsicScore;
 
     int[] NUM_ACTIONS;
     Types.ACTIONS[][] actions;
@@ -33,6 +34,7 @@ public class SingleMCTSPlayer
 
     public SingleMCTSPlayer(Random a_rnd, int[] NUM_ACTIONS, Types.ACTIONS[][] actions, int id, int oppID, int no_players)
     {
+        intrinsicScore = 0;
         m_rnd = a_rnd;
         this.NUM_ACTIONS = NUM_ACTIONS;
         this.actions = actions;

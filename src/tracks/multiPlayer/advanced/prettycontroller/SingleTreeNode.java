@@ -29,6 +29,7 @@ public class SingleTreeNode
     public int[] NUM_ACTIONS;
     public Types.ACTIONS[][] actions;
     public int id, oppID, no_players;
+    public int intrinsicScore;
 
     public StateObservationMulti rootState;
 
@@ -51,6 +52,7 @@ public class SingleTreeNode
         this.NUM_ACTIONS = NUM_ACTIONS;
         children = new SingleTreeNode[NUM_ACTIONS[id]];
         this.actions = actions;
+        intrinsicScore = 0;
     }
 
 
@@ -222,7 +224,7 @@ public class SingleTreeNode
         if(gameOver && win == Types.WINNER.PLAYER_WINS)
             rawScore += HUGE_POSITIVE;
 
-        return rawScore;
+        return rawScore + intrinsicScore;
     }
 
     public boolean finishRollout(StateObservationMulti rollerState, int depth)
