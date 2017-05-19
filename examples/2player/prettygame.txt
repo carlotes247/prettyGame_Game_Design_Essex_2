@@ -5,9 +5,9 @@ BasicGame no_players=2
     goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar > ShootAvatar ammo=pickaxe speed=0.5 img=Link_NES_sliced/down frameRate=1.25 imgUp=Link_NES_sliced/up imgDown=Link_NES_sliced/down imgLeft=Link_NES_sliced/left imgRight=Link_NES_sliced/right
-        avatarA > stype=proA
-        avatarB > stype=proB img=Link_NES_sliced/blueDown imgUp=Link_NES_sliced/blueUp imgDown=Link_NES_sliced/blueDown imgLeft=Link_NES_sliced/blueLeft imgRight=Link_NES_sliced/blueRight
+      avatar > ShootAvatar ammo=pickaxe speed=0.5 frameRate=1.25
+        avatarA > stype=proA orientedImg=Link_NES_sliced/link
+        avatarB > stype=proB orientedImg=Link_NES_sliced/blueLink
       enemy > RandomNPC cooldown=3 cons=15 img=oryx/bat1 speed=0.2
       tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
