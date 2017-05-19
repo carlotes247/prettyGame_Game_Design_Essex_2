@@ -53,7 +53,7 @@ BasicGame no_players=2
     tank pro > spawn stype=pickaxe
     tank pro > bounceForward
 
-    avatar pickaxe > changeResource resource=pickaxe
+    avatar pickaxe > changeResource resource=pickaxe scoreChange=1
     pickaxe avatar > killSprite
     wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
 
@@ -74,3 +74,5 @@ BasicGame no_players=2
   TerminationSet
     SpriteCounterMore stype=winA limit=1  win=True,False
     SpriteCounterMore stype=winB limit=1  win=False,True
+    SpriteCounter stype=avatarA win=False,True
+    SpriteCounter stype=avatarB win=True,False

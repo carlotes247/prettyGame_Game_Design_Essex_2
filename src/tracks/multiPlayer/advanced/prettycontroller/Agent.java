@@ -4,6 +4,7 @@ import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
+import tracks.multiPlayer.advanced.prettycontroller.heuristics.HeuristicStubborn;
 import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
 import tracks.multiPlayer.advanced.prettycontroller.ucb.Bandit;
 
@@ -26,10 +27,12 @@ public class Agent extends AbstractMultiPlayer {
     protected SingleMCTSPlayer mctsPlayer;
 
     static InteractorHeuristic hInteract;
+    static HeuristicStubborn heuristicStubborn;
     public static int heuristic;
-    public int no_heuristics = 2;
+    public int no_heuristics = 3;
     static final int HEURISTIC_DEFAULT = 0;
     static final int HEURISTIC_INTERACT = 1;
+    static final int HEURISTIC_STUBBORN = 2;
     static Bandit ucb;
 
     /**
@@ -65,7 +68,8 @@ public class Agent extends AbstractMultiPlayer {
         mctsPlayer = getPlayer(so, elapsedTimer, NUM_ACTIONS, actions, id, oppID, no_players);
 
         hInteract = new InteractorHeuristic(so, playerID);
-        heuristic = HEURISTIC_DEFAULT;
+        heuristicStubborn = new HeuristicStubborn(playerID);
+        heuristic = HEURISTIC_STUBBORN;
         ucb = new Bandit(no_heuristics);
 
     }
@@ -87,15 +91,11 @@ public class Agent extends AbstractMultiPlayer {
         //Set the state observation object as the new root of the tree.
         mctsPlayer.init(stateObs);
 
-        ucb.pullArm();
-        heuristic = ucb.x;
+//        ucb.pullArm();
+//        heuristic = ucb.x;
 
         //Determine the action using MCTS...
         int action = mctsPlayer.run(elapsedTimer);
-
-//        int sameMove = (getAvatarLastAction(playerID) == action) ? 1 : 0;
-//        int sameMoveBonus = 10;
-//        addScore(sameMoveBonus*sameMove);
 
         //... and return it.
         return actions[id][action];

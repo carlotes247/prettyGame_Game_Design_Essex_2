@@ -64,11 +64,16 @@ public class SingleTreeNode
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        if (heuristic == HEURISTIC_INTERACT) {
-            hInteract.setLastGameTick(rootState.getGameTick() - 1);
-            hInteract.update(rootState);
+        switch (heuristic)
+        {
+            case HEURISTIC_INTERACT:
+            {
+                hInteract.setLastGameTick(rootState.getGameTick() - 1);
+                hInteract.update(rootState);
+                break;
+            }
+            default: break;
         }
-
 
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
@@ -76,8 +81,19 @@ public class SingleTreeNode
 
             StateObservationMulti state = rootState.copy();
 
-            if (heuristic == HEURISTIC_INTERACT) {
-                hInteract.reset();
+            switch (heuristic)
+            {
+                case HEURISTIC_INTERACT:
+                {
+                    hInteract.reset();
+                    break;
+                }
+                case HEURISTIC_STUBBORN:
+                {
+                    heuristicStubborn.reset();
+                    break;
+                }
+                default: break;
             }
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
@@ -140,7 +156,7 @@ public class SingleTreeNode
         Types.ACTIONS[] oppActions = actions[oppID];
         acts[oppID] = oppActions[new Random().nextInt(oppActions.length)];
 
-        state.advance(acts);
+        advance_state(state, acts);
 
         SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd, id, oppID, no_players, NUM_ACTIONS, actions);
         children[bestAction] = tn;
@@ -188,11 +204,25 @@ public class SingleTreeNode
         Types.ACTIONS[] oppActions = actions[oppID];
         acts[oppID] = oppActions[new Random().nextInt(oppActions.length)];
 
-        state.advance(acts);
+        advance_state(state, acts);
 
         return selected;
     }
 
+    void advance_state(StateObservationMulti state, Types.ACTIONS[] acts)
+    {
+        switch (heuristic)
+        {
+            case HEURISTIC_STUBBORN:
+            {
+                heuristicStubborn.update(state, acts, m_depth);
+                break;
+            }
+            default: break;
+        }
+
+        state.advance(acts);
+    }
 
     public double rollOut(StateObservationMulti state)
     {
@@ -205,7 +235,8 @@ public class SingleTreeNode
             for (int i = 0; i < no_players; i++) {
                 acts[i] = actions[i][m_rnd.nextInt(NUM_ACTIONS[i])];
             }
-            state.advance(acts);
+
+            advance_state(state, acts);
             thisDepth++;
         }
 
@@ -226,25 +257,31 @@ public class SingleTreeNode
 
         double value = 0;
 
-        if (heuristic == HEURISTIC_DEFAULT) {
-            boolean gameOver = a_gameState.isGameOver();
-            Types.WINNER win = a_gameState.getMultiGameWinner()[id];
-            value = a_gameState.getGameScore(id);
+        switch (heuristic)
+        {
+            case HEURISTIC_INTERACT:
+            {
+                value = hInteract.evaluateState(a_gameState);
+                break;
+            }
+            case HEURISTIC_STUBBORN:
+                value += heuristicStubborn.evaluateState(a_gameState);
+                //fall-through
+            case HEURISTIC_DEFAULT:
+            {
+                boolean gameOver = a_gameState.isGameOver();
+                Types.WINNER win = a_gameState.getMultiGameWinner()[id];
+                value += a_gameState.getGameScore(id);
 
-            if (gameOver && win == Types.WINNER.PLAYER_LOSES)
-                value += HUGE_NEGATIVE;
+                if (gameOver && win == Types.WINNER.PLAYER_LOSES)
+                    value += HUGE_NEGATIVE;
 
-            if (gameOver && win == Types.WINNER.PLAYER_WINS)
-                value += HUGE_POSITIVE;
+                if (gameOver && win == Types.WINNER.PLAYER_WINS)
+                    value += HUGE_POSITIVE;
 
-
-        } else if (heuristic == HEURISTIC_INTERACT) {
-            value = hInteract.evaluateState(a_gameState);
-        }
-
-        ucb.applyReward(value);
-        if(ucb.revertOrKeep(value)) {
-            heuristic = ucb.x;
+                break;
+            }
+            default: break;
         }
 
         return value;
