@@ -237,8 +237,14 @@ public class SingleTreeNode
             if (gameOver && win == Types.WINNER.PLAYER_WINS)
                 value += HUGE_POSITIVE;
 
+
         } else if (heuristic == HEURISTIC_INTERACT) {
             value = hInteract.evaluateState(a_gameState);
+        }
+
+        ucb.applyReward(value);
+        if(ucb.revertOrKeep(value)) {
+            heuristic = ucb.x;
         }
 
         return value;
