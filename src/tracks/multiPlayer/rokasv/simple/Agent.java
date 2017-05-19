@@ -55,19 +55,41 @@ public class Agent extends AbstractMultiPlayer
             acts[id] = action;
             acts[oppID] = oppAction;
 
+            double stateImprovement = 0;
+
             for(int i=0;i<3;i++)
             {
                 stateCopy.advance(acts);
+                if(!stateObs.getAvailableActions(id).contains(action)) break;
 
-                if(compare_states(stateObs, stateCopy) < 0)
+                stateImprovement = compare_states(stateObs, stateCopy);
+                if(stateImprovement < 0)
                 {
                     break;
                 }
             }
 
-            if(compare_states(stateObs, stateCopy) >= 0)
+            if(stateImprovement >= 0)
             {
                 panic = false;
+                ArrayList<Types.ACTIONS> avActions = stateObs.getAvailableActions(id);
+
+                for(int j=0;j<avActions.size();j++)
+                {
+                    stateCopy = stateObs.copy();
+                    for(int k=0;k<10;k++)
+                    {
+                        acts[id] = avActions.get(j);
+                        if(!stateObs.getAvailableActions(id).contains(avActions.get(j))) break;
+                        stateCopy.advance(acts);
+                        if(compare_states(stateObs, stateCopy) < 0) break;
+                    }
+                    if(compare_states(stateObs, stateCopy) > stateImprovement)
+                    {
+                        action = avActions.get(j);
+                        lastAction = action;
+                    }
+                }
                 break;
             }
             else
@@ -78,6 +100,8 @@ public class Agent extends AbstractMultiPlayer
 
             remaining = elapsedTimer.remainingTimeMillis();
         }
+
+        System.out.println(remaining);
 
         repeatsDone++;
         if(repeatsDone == maxRepeats)
