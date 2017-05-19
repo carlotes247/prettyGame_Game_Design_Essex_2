@@ -32,9 +32,6 @@ BasicGame
   InteractionSet
 
 
-
-
-
     pro wall > stepBack
     pro wall > reverseDirection
 

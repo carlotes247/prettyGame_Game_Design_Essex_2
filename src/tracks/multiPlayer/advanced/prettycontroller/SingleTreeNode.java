@@ -65,8 +65,13 @@ public class SingleTreeNode
         int numIters = 0;
 
         if (heuristic == HEURISTIC_INTERACT) {
-            hInteract.setLastGameTick(rootState.getGameTick() - 1);
-            hInteract.update(rootState);
+                hInteract.setLastGameTick(rootState.getGameTick() - 1);
+                hInteract.update(rootState);
+        }
+
+        if (heuristic == HEURISTIC_EXPLORE) {
+            hExplore.setLastGameTick(rootState.getGameTick() - 1);
+            hExplore.update(rootState);
         }
 
 
@@ -78,6 +83,10 @@ public class SingleTreeNode
 
             if (heuristic == HEURISTIC_INTERACT) {
                 hInteract.reset();
+            }
+
+            if (heuristic == HEURISTIC_EXPLORE) {
+                hExplore.reset();
             }
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
@@ -142,6 +151,10 @@ public class SingleTreeNode
 
         state.advance(acts);
 
+        // to do add future positions
+        // Add the position in our new array after this node has been explored (exploration of the future)
+        hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
+
         SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd, id, oppID, no_players, NUM_ACTIONS, actions);
         children[bestAction] = tn;
         return tn;
@@ -190,6 +203,9 @@ public class SingleTreeNode
 
         state.advance(acts);
 
+        // Add the position in our new array after this node has been explored (exploration of the future)
+        hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
+
         return selected;
     }
 
@@ -207,6 +223,9 @@ public class SingleTreeNode
             }
             state.advance(acts);
             thisDepth++;
+
+            // Add the position in our new array after this node has been explored (exploration of the future)
+            hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
         }
 
 
@@ -239,6 +258,8 @@ public class SingleTreeNode
 
         } else if (heuristic == HEURISTIC_INTERACT) {
             value = hInteract.evaluateState(a_gameState);
+        } else if ( heuristic == HEURISTIC_EXPLORE) {
+            value = hExplore.evaluateState(a_gameState);
         }
 
         return value;
