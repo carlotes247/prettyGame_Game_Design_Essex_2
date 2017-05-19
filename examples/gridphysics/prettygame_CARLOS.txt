@@ -1,9 +1,10 @@
 BasicGame
   SpriteSet
-    floor > Immovable img=oryx/backLBlue hidden=True
-    goal  > Door color=GREEN img=oryx/doorclosed1
+    floor > Immovable img=world_NES_sliced/58  hidden=True
+    floor2 > Immovable img=world_NES_sliced/2  hidden=True
+    goal  > Door color=GREEN img=world_NES_sliced/0
     movable >
-      avatar  > ShootAvatar stype=pro ammo=pickaxe img=Link_NES_sliced/0 imgUp=Link_NES_sliced/2  imgDown=Link_NES_sliced/0 imgLeft=Link_NES_sliced/1 imgRight=Link_NES_sliced/3
+      avatar  > ShootAvatar stype=pro ammo=pickaxe speed=0.3 img=Link_NES_sliced/down frameRate=3 imgUp=Link_NES_sliced/up imgDown=Link_NES_sliced/down imgLeft=Link_NES_sliced/left imgRight=Link_NES_sliced/right
       enemy > RandomNPC cooldown=2 cons=6 img=oryx/bat1
       tank > Missile speed=0.1
         tankR > img=newset/tank_blueR orientation=RIGHT
@@ -13,7 +14,7 @@ BasicGame
     flighttime > Resource value=1 limit=5
     pro > Missile speed=1 img=oryx/pickaxe
 
-    wall > Immovable img=oryx/wall3 autotiling=True
+    wall > Immovable img=world_NES_sliced/wall1 autotiling=false
 
     pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
 
@@ -22,6 +23,7 @@ BasicGame
     A > floor avatar
     e > floor enemy
     . > floor
+    * > floor2
     w > floor wall
     t > floor tankR
     o > floor tankU
