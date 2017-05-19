@@ -35,6 +35,8 @@ public class Bandit {
     public static final boolean STATIONARY = true;
     public static final int MAX_SIZE = 20;
 
+
+    @SuppressWarnings("unchecked")
     public Bandit(int arms) {
         nArms = arms;
         armPulls = new int[nArms];

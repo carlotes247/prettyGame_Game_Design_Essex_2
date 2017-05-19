@@ -86,11 +86,14 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         if (stateObs != null) {
             for (Event e : stateObs.getEventsHistory()) {
                 if (e.gameStep >= lastGameTick) {
-                    objects.add(e.activeSpriteId);
-                    objects.add(e.passiveSpriteId);
+                    if (e.activeTypeId == playerType || e.passiveTypeId == playerType || e.fromAvatar) {
+                        objects.add(e.activeSpriteId);
+                        objects.add(e.passiveSpriteId);
+                    }
                 }
             }
         }
+
     }
 
     private double findNewEvent(StateObservationMulti stateObs, double rawScore) {
