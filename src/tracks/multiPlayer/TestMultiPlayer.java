@@ -14,7 +14,7 @@ public class TestMultiPlayer {
 	// Available tracks:
 	String doNothingController = "tracks.multiPlayer.simple.doNothing.Agent";
 	String randomController = "tracks.multiPlayer.simple.sampleRandom.Agent";
-	String oneStepController = "tracks.multiPlayer.simple.sampleOneStepLookAhead.Agent";
+	String oneStepController = "tracks.multiPlayer.simple.simple.Agent";
 
 	String sampleMCTSController = "tracks.multiPlayer.advanced.sampleMCTS.Agent";
 	String sampleRSController = "tracks.multiPlayer.advanced.sampleRS.Agent";
@@ -22,10 +22,11 @@ public class TestMultiPlayer {
 	String prettyController = "tracks.multiPlayer.advanced.prettycontroller.Agent";
 
 	String humanController = "tracks.multiPlayer.tools.human.Agent";
+	String rokoController = "tracks.multiPlayer.rokasv.simple.Agent";
 
 
 	// Set here the tracks used in the games (need 2 separated by space).
-	String controllers = humanController + " " + prettyController;
+	String controllers = sampleMCTSController + " " + rokoController;
 	// String tracks = sampleMCTSController + " " + sampleMCTSController;
 
 	// Available games:

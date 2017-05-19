@@ -15,7 +15,7 @@ public class TestMultiGameSpace {
         // Available tracks:
         String doNothingController = "tracks.multiPlayer.simple.doNothing.Agent";
         String randomController = "tracks.multiPlayer.simple.sampleRandom.Agent";
-        String oneStepController = "tracks.multiPlayer.simple.sampleOneStepLookAhead.Agent";
+        String oneStepController = "tracks.multiPlayer.simple.simple.Agent";
         String sampleMCTSController = "tracks.multiPlayer.deprecated.sampleMCTS.Agent";
         String sampleOLMCTSController = "tracks.multiPlayer.deprecated.sampleMCTS.Agent";
         String sampleGAController = "tracks.multiPlayer.deprecated.sampleGA.Agent";

@@ -62,8 +62,7 @@ BasicGame no_players=2
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
 
-    pro wall > stepBack
-    pro wall > reverseDirection
+    wall pro > killSprite
 
     tank pro > bounceForward
     pro tank > transformTo stype=pickaxe
@@ -71,7 +70,6 @@ BasicGame no_players=2
     pickaxe avatarA > collectResource scoreChange=1,0
     pickaxe avatarB > collectResource scoreChange=0,1
     pickaxe avatar > killSprite
-    wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
 
     pro EOS > wrapAround
 
