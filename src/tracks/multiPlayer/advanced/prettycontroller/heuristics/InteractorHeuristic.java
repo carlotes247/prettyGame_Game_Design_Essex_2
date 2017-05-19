@@ -30,14 +30,15 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         newObjects = new TreeSet<>();
         newObjects.addAll(objects);
         this.playerID = playerID;
+        lastGameTick = 0;
         if (stateObs != null) {
-            updateEvents(stateObs, objects, 0);
+            updateEvents(stateObs, objects);
             playerType = stateObs.getAvatarType(playerID);
         }
     }
 
     public void update(StateObservationMulti stateObs) {
-        updateEvents(stateObs, objects, stateObs.getGameTick()-1);
+        updateEvents(stateObs, objects);
     }
 
     public void reset() {
@@ -50,7 +51,7 @@ public class InteractorHeuristic extends StateHeuristicMulti {
     }
 
     public double evaluateState(StateObservationMulti stateObs) {
-        updateEvents(stateObs, newObjects, lastGameTick);
+        updateEvents(stateObs, newObjects);
 
         boolean gameOver = stateObs.isGameOver();
         Types.WINNER win = stateObs.getMultiGameWinner()[playerID];
@@ -69,7 +70,7 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         return rawScore;
     }
 
-    private void updateEvents(StateObservationMulti stateObs, TreeSet<Integer> objects, int lastGameTick) {
+    private void updateEvents(StateObservationMulti stateObs, TreeSet<Integer> objects) {
         if (stateObs != null) {
             for (Event e : stateObs.getEventsHistory()) {
                 if (e.gameStep >= lastGameTick) {

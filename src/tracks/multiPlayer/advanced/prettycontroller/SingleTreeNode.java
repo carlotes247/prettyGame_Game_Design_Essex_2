@@ -30,7 +30,13 @@ public class SingleTreeNode
     public int[] NUM_ACTIONS;
     public Types.ACTIONS[][] actions;
     public int id, oppID, no_players;
-    public static InteractorHeuristic heuristic;
+
+
+    public static InteractorHeuristic hInteract;
+    public static int heuristic;
+    public static final int HEURISTIC_DEFAULT = 0;
+    public static final int HEURISTIC_INTERACT = 1;
+
 
     public StateObservationMulti rootState;
 
@@ -59,14 +65,17 @@ public class SingleTreeNode
 
     public void mctsSearch(ElapsedCpuTimer elapsedTimer) {
 
-        heuristic = new InteractorHeuristic(rootState,id);
+
+        hInteract = new InteractorHeuristic(rootState,id);
 
         double avgTimeTaken = 0;
         double acumTimeTaken = 0;
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        heuristic.update(rootState);
+        hInteract.setLastGameTick(rootState.getGameTick() - 1);
+        hInteract.update(rootState);
+
 
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
@@ -74,8 +83,7 @@ public class SingleTreeNode
 
             StateObservationMulti state = rootState.copy();
 
-            heuristic.reset();
-            heuristic.setLastGameTick(state.getGameTick());
+            hInteract.reset();
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             SingleTreeNode selected = treePolicy(state);
@@ -233,7 +241,7 @@ public class SingleTreeNode
 //        if(gameOver && win == Types.WINNER.PLAYER_WINS)
 //            rawScore += HUGE_POSITIVE;
 
-        return heuristic.evaluateState(a_gameState);
+        return hInteract.evaluateState(a_gameState);
     }
 
     public boolean finishRollout(StateObservationMulti rollerState, int depth)
