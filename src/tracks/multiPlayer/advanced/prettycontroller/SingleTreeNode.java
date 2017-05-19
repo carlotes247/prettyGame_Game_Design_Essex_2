@@ -6,7 +6,8 @@ import core.game.StateObservationMulti;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
-import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
+
+import static tracks.multiPlayer.advanced.prettycontroller.Agent.*;
 
 public class SingleTreeNode
 {
@@ -30,13 +31,6 @@ public class SingleTreeNode
     public int[] NUM_ACTIONS;
     public Types.ACTIONS[][] actions;
     public int id, oppID, no_players;
-
-
-    public static InteractorHeuristic hInteract;
-    public static int heuristic;
-    public static final int HEURISTIC_DEFAULT = 0;
-    public static final int HEURISTIC_INTERACT = 1;
-
 
     public StateObservationMulti rootState;
 
@@ -65,16 +59,15 @@ public class SingleTreeNode
 
     public void mctsSearch(ElapsedCpuTimer elapsedTimer) {
 
-
-        hInteract = new InteractorHeuristic(rootState,id);
-
         double avgTimeTaken = 0;
         double acumTimeTaken = 0;
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        hInteract.setLastGameTick(rootState.getGameTick() - 1);
-        hInteract.update(rootState);
+        if (heuristic == HEURISTIC_INTERACT) {
+            hInteract.setLastGameTick(rootState.getGameTick() - 1);
+            hInteract.update(rootState);
+        }
 
 
         int remainingLimit = 5;
@@ -83,7 +76,9 @@ public class SingleTreeNode
 
             StateObservationMulti state = rootState.copy();
 
-            hInteract.reset();
+            if (heuristic == HEURISTIC_INTERACT) {
+                hInteract.reset();
+            }
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             SingleTreeNode selected = treePolicy(state);
@@ -229,19 +224,24 @@ public class SingleTreeNode
 
     public double value(StateObservationMulti a_gameState) {
 
-//        boolean gameOver = a_gameState.isGameOver();
-//
-//
-//        Types.WINNER win = a_gameState.getMultiGameWinner()[id];
-//        double rawScore = a_gameState.getGameScore(id);
-//
-//        if(gameOver && win == Types.WINNER.PLAYER_LOSES)
-//            rawScore += HUGE_NEGATIVE;
-//
-//        if(gameOver && win == Types.WINNER.PLAYER_WINS)
-//            rawScore += HUGE_POSITIVE;
+        double value = 0;
 
-        return hInteract.evaluateState(a_gameState);
+        if (heuristic == HEURISTIC_DEFAULT) {
+            boolean gameOver = a_gameState.isGameOver();
+            Types.WINNER win = a_gameState.getMultiGameWinner()[id];
+            value = a_gameState.getGameScore(id);
+
+            if (gameOver && win == Types.WINNER.PLAYER_LOSES)
+                value += HUGE_NEGATIVE;
+
+            if (gameOver && win == Types.WINNER.PLAYER_WINS)
+                value += HUGE_POSITIVE;
+
+        } else if (heuristic == HEURISTIC_INTERACT) {
+            value = hInteract.evaluateState(a_gameState);
+        }
+
+        return value;
     }
 
     public boolean finishRollout(StateObservationMulti rollerState, int depth)
