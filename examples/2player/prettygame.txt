@@ -14,8 +14,6 @@ BasicGame no_players=2
         tankL > img=newset/tank_blueL orientation=LEFT
         tankD > img=newset/tank_blueD orientation=DOWN
 
-
-
     #Tick counter
     #Quiescent tick counter
     pcq > Immovable invisible=true hidden=true
@@ -32,12 +30,9 @@ BasicGame no_players=2
     #Termination state
     dead > Immovable invisible=true hidden=true
 
-
     paspawn > SpawnPoint stype=pam prob=0.1 cooldown=50 invisible=true
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=true
     pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
-
-
 
     wall > Immovable img=oryx/wall3 autotiling=True
     pro > Missile speed=1 img=oryx/pickaxe
@@ -62,24 +57,16 @@ BasicGame no_players=2
     p > floor pickaxe paspawn
 
   InteractionSet
-
-
-
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
-
 
     pro wall > stepBack
     pro wall > reverseDirection
 
-
-
-
     tank pro > bounceForward
     pro tank > transformTo stype=pickaxe
 
-
-    pickaxe avatar > collectResource
+    pickaxe avatar > collectResource scoreChange=1
     pickaxe avatar > killSprite
     wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
 
@@ -96,7 +83,6 @@ BasicGame no_players=2
     enemy enemy > stepBack
     avatar enemy tank > killSprite scoreChange=-1
 
-
     #pickaxe flight timer
     pcqA floor > transformIfCount stype=pcaA stypeCount=proA geq=1
     pcaA floor > transformIfCount stype=pcqA stypeCount=pcA geq=2
@@ -112,12 +98,10 @@ BasicGame no_players=2
     pcaB floor > transformIfCount stype=pcqB stypeCount=proB leq=0
     pcB floor > transformIfCount stype=dead stypeCount=proB leq=0
 
-
     dead floor > killSprite
-
-
-
 
   TerminationSet
     SpriteCounterMore stype=winA limit=1  win=True,False
     SpriteCounterMore stype=winB limit=1  win=False,True
+    SpriteCounter stype=avatarA limit=0  win=False,True
+    SpriteCounter stype=avatarB limit=0  win=True,False
