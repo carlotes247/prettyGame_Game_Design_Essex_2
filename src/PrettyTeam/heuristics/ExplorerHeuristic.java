@@ -1,12 +1,9 @@
-package tracks.multiPlayer.advanced.prettycontroller.heuristics;
+package PrettyTeam.heuristics;
 
 import core.game.StateObservationMulti;
-import ontology.Types;
 import tools.Vector2d;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by Carlotes(User) on 19/05/2017.

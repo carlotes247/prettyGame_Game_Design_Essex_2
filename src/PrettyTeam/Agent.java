@@ -1,13 +1,13 @@
-package tracks.multiPlayer.advanced.prettycontroller;
+package PrettyTeam;
 
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
+import PrettyTeam.heuristics.ExplorerHeuristic;
+import PrettyTeam.heuristics.HeuristicStubborn;
+import PrettyTeam.heuristics.InteractorHeuristic;
+import PrettyTeam.ucb.Bandit;
 import tools.ElapsedCpuTimer;
-import tracks.multiPlayer.advanced.prettycontroller.heuristics.ExplorerHeuristic;
-import tracks.multiPlayer.advanced.prettycontroller.heuristics.HeuristicStubborn;
-import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
-import tracks.multiPlayer.advanced.prettycontroller.ucb.Bandit;
 
 import java.util.ArrayList;
 import java.util.Random;
