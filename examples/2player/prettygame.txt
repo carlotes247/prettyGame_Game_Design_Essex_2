@@ -1,12 +1,13 @@
 BasicGame no_players=2
   SpriteSet
-    floor > Immovable img=oryx/backLBlue hidden=True
-    goal  > Door color=GREEN img=oryx/doorclosed1
+    floor > Immovable img=world_NES_sliced/58 hidden=True
+    floor2 > Immovable img=world_NES_sliced/2  hidden=True
+    goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar > ShootAvatar ammo=pickaxe speed=0.5 img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
+      avatar > ShootAvatar ammo=pickaxe speed=0.5 img=Link_NES_sliced/down frameRate=1.25 imgUp=Link_NES_sliced/up imgDown=Link_NES_sliced/down imgLeft=Link_NES_sliced/left imgRight=Link_NES_sliced/right
         avatarA > stype=proA
-        avatarB > stype=proB
+        avatarB > stype=proB img=Link_NES_sliced/blueDown imgUp=Link_NES_sliced/blueUp imgDown=Link_NES_sliced/blueDown imgLeft=Link_NES_sliced/blueLeft imgRight=Link_NES_sliced/blueRight
       enemy > RandomNPC cooldown=3 cons=15 img=oryx/bat1 speed=0.2
       tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
@@ -34,7 +35,7 @@ BasicGame no_players=2
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=true
     pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
 
-    wall > Immovable img=oryx/wall3 autotiling=True
+    wall > Immovable img=world_NES_sliced/wall1 autotiling=false
     pro > Missile speed=1 img=oryx/pickaxe
         proA > singleton=true
         proB > singleton=true
@@ -49,6 +50,7 @@ BasicGame no_players=2
     B > floor avatarB pcqB
     e > floor enemy
     . > floor
+    * > floor2
     w > floor wall
     r > floor tankR
     u > floor tankU
