@@ -4,7 +4,7 @@ BasicGame no_players=2
     goal  > Door color=GREEN img=oryx/doorclosed1
 
     movable >
-      avatar > ShootAvatar ammo=pickaxe speed=0.5 img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
+      avatar > ShootAvatar ammo=pickaxe speed=1 img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
         avatarA > stype=proA
         avatarB > stype=proB
       enemy > RandomNPC cooldown=3 cons=15 img=oryx/bat1 speed=0.2
@@ -14,6 +14,9 @@ BasicGame no_players=2
         tankL > img=newset/tank_blueL orientation=LEFT
         tankD > img=newset/tank_blueD orientation=DOWN
 
+
+    paspawn > SpawnPoint stype=pam prob=0.1 cooldown=50 invisible=true
+    pam > SpawnPoint stype=pickaxe prob=1 limit=1 invisible=true
     pickaxe > Resource value=1 limit=5 img=oryx/pickaxe
 
 
@@ -21,7 +24,7 @@ BasicGame no_players=2
     wall > Immovable img=oryx/wall3 autotiling=True
 
     flighttime > Resource value=1 limit=5
-    pro > Missile speed=1 cooldown=2 img=oryx/pickaxe
+    pro > Missile speed=1 cooldown=1 img=oryx/pickaxe
         proA > singleton=true
         proB > singleton=true
 
@@ -40,10 +43,12 @@ BasicGame no_players=2
     u > floor tankU
     l > floor tankL
     d > floor tankD
-    p > floor pickaxe
+    p > floor pickaxe paspawn
 
   InteractionSet
 
+
+    pam pickaxe > killSprite
     pro wall > stepBack
     pro wall > reverseDirection
 
