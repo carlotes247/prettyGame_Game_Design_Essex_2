@@ -64,14 +64,27 @@ public class SingleTreeNode
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        if (heuristic == HEURISTIC_INTERACT) {
+        switch (heuristic)
+        {
+            case HEURISTIC_INTERACT:
+            {
                 hInteract.setLastGameTick(rootState.getGameTick() - 1);
                 hInteract.update(rootState);
-        }
+                break;
+            }
+            case HEURISTIC_STUBBORN:
+            {
 
-        if (heuristic == HEURISTIC_EXPLORE) {
-            hExplore.setLastGameTick(rootState.getGameTick() - 1);
-            hExplore.update(rootState);
+                break;
+            }
+
+            case HEURISTIC_EXPLORE:
+            {
+                hExplore.setLastGameTick(rootState.getGameTick() - 1);
+                hExplore.update(rootState);
+                break;
+            }
+            default: break;
         }
 
 
@@ -81,12 +94,24 @@ public class SingleTreeNode
 
             StateObservationMulti state = rootState.copy();
 
-            if (heuristic == HEURISTIC_INTERACT) {
-                hInteract.reset();
-            }
-
-            if (heuristic == HEURISTIC_EXPLORE) {
-                hExplore.reset();
+            switch (heuristic)
+            {
+                case HEURISTIC_INTERACT:
+                {
+                    hInteract.reset();
+                    break;
+                }
+                case HEURISTIC_STUBBORN:
+                {
+                    heuristicStubborn.reset();
+                    break;
+                }
+                case HEURISTIC_EXPLORE:
+                {
+                    hExplore.reset();
+                    break;
+                }
+                default: break;
             }
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
@@ -149,7 +174,7 @@ public class SingleTreeNode
         Types.ACTIONS[] oppActions = actions[oppID];
         acts[oppID] = oppActions[new Random().nextInt(oppActions.length)];
 
-        state.advance(acts);
+        advance_state(state, acts);
 
         // to do add future positions
         // Add the position in our new array after this node has been explored (exploration of the future)
@@ -201,7 +226,7 @@ public class SingleTreeNode
         Types.ACTIONS[] oppActions = actions[oppID];
         acts[oppID] = oppActions[new Random().nextInt(oppActions.length)];
 
-        state.advance(acts);
+        advance_state(state, acts);
 
         // Add the position in our new array after this node has been explored (exploration of the future)
         hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
@@ -209,6 +234,20 @@ public class SingleTreeNode
         return selected;
     }
 
+    void advance_state(StateObservationMulti state, Types.ACTIONS[] acts)
+    {
+        switch (heuristic)
+        {
+            case HEURISTIC_STUBBORN:
+            {
+                heuristicStubborn.update(state, acts, m_depth);
+                break;
+            }
+            default: break;
+        }
+
+        state.advance(acts);
+    }
 
     public double rollOut(StateObservationMulti state)
     {
@@ -221,7 +260,8 @@ public class SingleTreeNode
             for (int i = 0; i < no_players; i++) {
                 acts[i] = actions[i][m_rnd.nextInt(NUM_ACTIONS[i])];
             }
-            state.advance(acts);
+
+            advance_state(state, acts);
             thisDepth++;
 
             // Add the position in our new array after this node has been explored (exploration of the future)
@@ -230,36 +270,60 @@ public class SingleTreeNode
 
 
         double delta = value(state);
+        double normDelta = Utils.normalise(delta, bounds[0], bounds[1]);
 
         if(delta < bounds[0])
             bounds[0] = delta;
         if(delta > bounds[1])
             bounds[1] = delta;
 
-        //double normDelta = Utils.normalise(delta ,lastBounds[0], lastBounds[1]);
+        ucb.applyReward(normDelta);
+        if(ucb.revertOrKeep(normDelta)) {
+            heuristic = ucb.x;
+        }
 
-        return delta;
+        return normDelta;
     }
 
     public double value(StateObservationMulti a_gameState) {
 
         double value = 0;
 
-        if (heuristic == HEURISTIC_DEFAULT) {
-            boolean gameOver = a_gameState.isGameOver();
-            Types.WINNER win = a_gameState.getMultiGameWinner()[id];
-            value = a_gameState.getGameScore(id);
+        switch (heuristic)
+        {
+            case HEURISTIC_INTERACT:
+            {
+                value = hInteract.evaluateState(a_gameState);
+                break;
+            }
+            case HEURISTIC_STUBBORN:
+                value += heuristicStubborn.evaluateState(a_gameState);
+                //fall-through
+            case HEURISTIC_DEFAULT:
+            {
+                boolean gameOver = a_gameState.isGameOver();
+                Types.WINNER win = a_gameState.getMultiGameWinner()[id];
+                value += a_gameState.getGameScore(id);
 
-            if (gameOver && win == Types.WINNER.PLAYER_LOSES)
-                value += HUGE_NEGATIVE;
+                if (gameOver && win == Types.WINNER.PLAYER_LOSES)
+                    value += HUGE_NEGATIVE;
 
-            if (gameOver && win == Types.WINNER.PLAYER_WINS)
-                value += HUGE_POSITIVE;
+                if (gameOver && win == Types.WINNER.PLAYER_WINS)
+                    value += HUGE_POSITIVE;
 
-        } else if (heuristic == HEURISTIC_INTERACT) {
-            value = hInteract.evaluateState(a_gameState);
-        } else if ( heuristic == HEURISTIC_EXPLORE) {
-            value = hExplore.evaluateState(a_gameState);
+                break;
+            }
+            case HEURISTIC_EXPLORE:
+            {
+                value = hExplore.evaluateState(a_gameState);
+                break;
+            }
+            default: break;
+        }
+
+        ucb.applyReward(value);
+        if(ucb.revertOrKeep(value)) {
+            heuristic = ucb.x;
         }
 
         return value;

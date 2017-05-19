@@ -4,22 +4,45 @@ BasicGame no_players=2
     goal  > Door color=GREEN img=oryx/doorclosed1
 
     movable >
-      avatar > ShootAvatar ammo=pickaxe img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
+      avatar > ShootAvatar ammo=pickaxe speed=0.5 img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
         avatarA > stype=proA
         avatarB > stype=proB
       enemy > RandomNPC cooldown=3 cons=15 img=oryx/bat1 speed=0.2
       tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
+        tankL > img=newset/tank_blueL orientation=LEFT
+        tankD > img=newset/tank_blueD orientation=DOWN
 
-    pickaxe > Resource value=1 limit=5 img=oryx/pickaxe
+
+
+    #Tick counter
+    #Quiescent tick counter
+    pcq > Immovable invisible=true hidden=true
+        pcqA >
+        pcqB >
+    #Active tick counter
+    pca > SpawnPoint stype=pc invisible=true hidden=true
+        pcaA > stype=pcA
+        pcaB > stype=pcB
+    #Tick count
+    pc > Immovable invisible=true hidden=true
+        pcA >
+        pcB >
+    #Termination state
+    dead > Immovable invisible=true hidden=true
+
+
+    paspawn > SpawnPoint stype=pam prob=0.1 cooldown=50 invisible=true
+    pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=true
+    pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
+
+
 
     wall > Immovable img=oryx/wall3 autotiling=True
-
-    flighttime > Resource value=1 limit=5
     pro > Missile speed=1 img=oryx/pickaxe
-        proA >
-        proB >
+        proA > singleton=true
+        proB > singleton=true
 
     win > Immovable invisible=true
         winA >
@@ -27,40 +50,43 @@ BasicGame no_players=2
 
   LevelMapping
     g > floor goal
-    A > floor avatarA
-    B > floor avatarB
+    A > floor avatarA pcqA
+    B > floor avatarB pcqB
     e > floor enemy
     . > floor
     w > floor wall
-    t > floor tankR
-    o > floor tankU
-    p > floor pickaxe
+    r > floor tankR
+    u > floor tankU
+    l > floor tankL
+    d > floor tankD
+    p > floor pickaxe paspawn
 
   InteractionSet
+
+
+
+    #if a pickaxe would respawn on a tile that already has one, prevent it
+    pam pickaxe > killSprite
+
 
     pro wall > stepBack
     pro wall > reverseDirection
 
-    pro floor > changeResource resource=flighttime value=1
-    pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
-    pro floor > killIfHasMore resource=flighttime limit=4
 
-    pro tank > killSprite
-    tank pro > spawn stype=pickaxe
+
+
     tank pro > bounceForward
+    pro tank > transformTo stype=pickaxe
 
-    avatar pickaxe > changeResource resource=pickaxe
+
+    pickaxe avatar > collectResource
     pickaxe avatar > killSprite
     wall avatar > killIfOtherHasMore resource=pickaxe limit=1 subtract=true
 
     pro EOS > wrapAround
 
-    enemy pro > spawn stype=pickaxe
-    pro enemy > killSprite
+    pro enemy > transformTo stype=pickaxe
     enemy pro > killSprite
-
-    avatarB proA > killSprite
-    avatarA proB > killSprite
 
     wall tank > killSprite
     movable wall > stepBack
@@ -70,8 +96,28 @@ BasicGame no_players=2
     enemy enemy > stepBack
     avatar enemy tank > killSprite scoreChange=-1
 
+
+    #pickaxe flight timer
+    pcqA floor > transformIfCount stype=pcaA stypeCount=proA geq=1
+    pcaA floor > transformIfCount stype=pcqA stypeCount=pcA geq=2
+    proA floor > transformIfCount stype=pickaxe stypeCount=pcA geq=2
+    pcA floor > transformIfCount stype=dead stypeCount=pcA geq=2
+    pcqB floor > transformIfCount stype=pcaB stypeCount=proB geq=1
+    pcaB floor > transformIfCount stype=pcqB stypeCount=pcB geq=2
+    proB floor > transformIfCount stype=pickaxe stypeCount=pcB geq=2
+    pcB floor > transformIfCount stype=dead stypeCount=pcB geq=2
+
+    pcaA floor > transformIfCount stype=pcqA stypeCount=proA leq=0
+    pcA floor > transformIfCount stype=dead stypeCount=proA leq=0
+    pcaB floor > transformIfCount stype=pcqB stypeCount=proB leq=0
+    pcB floor > transformIfCount stype=dead stypeCount=proB leq=0
+
+
+    dead floor > killSprite
+
+
+
+
   TerminationSet
     SpriteCounterMore stype=winA limit=1  win=True,False
-    SpriteCounterMore stype=winB limit=1   win=False,True
-    SpriteCounter stype=avatarA win=False,True
-    SpriteCounter stype=avatarB win=True,False
+    SpriteCounterMore stype=winB limit=1  win=False,True

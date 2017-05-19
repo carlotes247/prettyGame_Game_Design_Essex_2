@@ -1,9 +1,16 @@
 package tracks.multiPlayer.advanced.prettycontroller.heuristics;
 
 import core.game.Event;
+import core.game.Observation;
 import core.game.StateObservationMulti;
 import ontology.Types;
+import tools.Utils;
+import tools.Vector2d;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.TreeSet;
 
 /**
@@ -67,6 +74,11 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         rawScore += newObjects.size(); //Interactor
         //rawScore -= newObjects.size(); //Avoider
 
+
+        // If no new sprites have been interacted with, subtract distance to closest new sprite
+        // to nudge agent to move towards sprites it has not interacted with yet
+        rawScore = findNewEvent(stateObs, rawScore);
+
         return rawScore;
     }
 
@@ -74,12 +86,57 @@ public class InteractorHeuristic extends StateHeuristicMulti {
         if (stateObs != null) {
             for (Event e : stateObs.getEventsHistory()) {
                 if (e.gameStep >= lastGameTick) {
-                    objects.add(e.activeSpriteId);
-                    objects.add(e.passiveSpriteId);
+                    if (e.activeTypeId == playerType || e.passiveTypeId == playerType || e.fromAvatar) {
+                        objects.add(e.activeSpriteId);
+                        objects.add(e.passiveSpriteId);
+                    }
                 }
             }
         }
+
+    }
+
+    private double findNewEvent(StateObservationMulti stateObs, double rawScore) {
+        if (newObjects.size() == objects.size()) {
+            Vector2d position = stateObs.getAvatarPosition(playerID);
+
+            ArrayList<Observation>[] immovablePositions = stateObs.getImmovablePositions(position);
+            ArrayList<Observation>[] movablePositions = stateObs.getMovablePositions(position);
+            ArrayList<Observation>[] npcPositions = stateObs.getNPCPositions(position);
+            ArrayList<Observation>[] portalPositions = stateObs.getPortalsPositions(position);
+            ArrayList<Observation>[] resourcesPositions = stateObs.getResourcesPositions(position);
+
+            ArrayList<Observation> allObjects = new ArrayList<>();
+
+            if (movablePositions != null)
+                for (ArrayList<Observation> ar : movablePositions)
+                    allObjects.addAll(ar);
+
+            if (portalPositions != null)
+                for (ArrayList<Observation> ar : portalPositions)
+                    allObjects.addAll(ar);
+
+            if (npcPositions != null)
+                for (ArrayList<Observation> ar : npcPositions)
+                    allObjects.addAll(ar);
+
+            if (resourcesPositions != null)
+                for (ArrayList<Observation> ar : resourcesPositions)
+                    allObjects.addAll(ar);
+
+            if (immovablePositions != null)
+                for (ArrayList<Observation> ar : immovablePositions)
+                    allObjects.addAll(ar);
+
+            Collections.sort(allObjects);
+
+            for (Observation o : allObjects) {
+                if (!newObjects.contains(o.itype)) {
+                    double normalDist = Utils.normalise(o.sqDist / stateObs.getBlockSize(), 0, 5000);
+                    return rawScore + 1 - normalDist;
+                }
+            }
+        }
+        return rawScore;
     }
 }
-
-
