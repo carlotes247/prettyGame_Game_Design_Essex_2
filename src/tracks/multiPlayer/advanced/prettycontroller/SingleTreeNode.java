@@ -92,8 +92,8 @@ public class SingleTreeNode
             remaining = elapsedTimer.remainingTimeMillis();
         }
 
+//        System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
 
-        //System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
     }
 
     public SingleTreeNode treePolicy(StateObservationMulti state) {
@@ -211,15 +211,19 @@ public class SingleTreeNode
 
 
         double delta = value(state);
+        double normDelta = Utils.normalise(delta, bounds[0], bounds[1]);
 
         if(delta < bounds[0])
             bounds[0] = delta;
         if(delta > bounds[1])
             bounds[1] = delta;
 
-        //double normDelta = Utils.normalise(delta ,lastBounds[0], lastBounds[1]);
+        ucb.applyReward(normDelta);
+        if(ucb.revertOrKeep(normDelta)) {
+            heuristic = ucb.x;
+        }
 
-        return delta;
+        return normDelta;
     }
 
     public double value(StateObservationMulti a_gameState) {
@@ -240,11 +244,6 @@ public class SingleTreeNode
 
         } else if (heuristic == HEURISTIC_INTERACT) {
             value = hInteract.evaluateState(a_gameState);
-        }
-
-        ucb.applyReward(value);
-        if(ucb.revertOrKeep(value)) {
-            heuristic = ucb.x;
         }
 
         return value;
