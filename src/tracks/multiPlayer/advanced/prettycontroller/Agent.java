@@ -4,6 +4,7 @@ import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
+import tracks.multiPlayer.advanced.prettycontroller.heuristics.ExplorerHeuristic;
 import tracks.multiPlayer.advanced.prettycontroller.heuristics.HeuristicStubborn;
 import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
 import tracks.multiPlayer.advanced.prettycontroller.ucb.Bandit;
@@ -27,11 +28,13 @@ public class Agent extends AbstractMultiPlayer {
     protected SingleMCTSPlayer mctsPlayer;
 
     static InteractorHeuristic hInteract;
+    static ExplorerHeuristic hExplore;
     static HeuristicStubborn heuristicStubborn;
     public static int heuristic;
     public int no_heuristics = 4;
     static final int HEURISTIC_DEFAULT = 0;
     static final int HEURISTIC_INTERACT = 1;
+    static final int HEURISTIC_EXPLORE = 3;
     static final int HEURISTIC_STUBBORN = 2;
     static Bandit ucb;
 
@@ -68,8 +71,15 @@ public class Agent extends AbstractMultiPlayer {
         mctsPlayer = getPlayer(so, elapsedTimer, NUM_ACTIONS, actions, id, oppID, no_players);
 
         hInteract = new InteractorHeuristic(so, playerID);
+
+        hExplore = new ExplorerHeuristic(so, playerID);
+//        heuristic = HEURISTIC_INTERACT;
+        heuristic = HEURISTIC_EXPLORE;
+
+
         heuristicStubborn = new HeuristicStubborn(playerID);
         ucb = new Bandit(no_heuristics);
+
 
     }
 

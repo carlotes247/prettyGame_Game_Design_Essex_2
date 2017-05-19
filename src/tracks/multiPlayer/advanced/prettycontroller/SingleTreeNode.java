@@ -66,7 +66,8 @@ public class SingleTreeNode
 
         hInteract.setLastGameTick(rootState.getGameTick() - 1);
         hInteract.update(rootState);
-
+        hExplore.setLastGameTick(rootState.getGameTick() - 1);
+        hExplore.update(rootState);
 
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
@@ -84,6 +85,11 @@ public class SingleTreeNode
                 case HEURISTIC_STUBBORN:
                 {
                     heuristicStubborn.reset();
+                    break;
+                }
+                case HEURISTIC_EXPLORE:
+                {
+                    hExplore.reset();
                     break;
                 }
                 default: break;
@@ -151,6 +157,10 @@ public class SingleTreeNode
 
         advance_state(state, acts);
 
+        // to do add future positions
+        // Add the position in our new array after this node has been explored (exploration of the future)
+        hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
+
         SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd, id, oppID, no_players, NUM_ACTIONS, actions);
         children[bestAction] = tn;
         return tn;
@@ -199,6 +209,9 @@ public class SingleTreeNode
 
         advance_state(state, acts);
 
+        // Add the position in our new array after this node has been explored (exploration of the future)
+        hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
+
         return selected;
     }
 
@@ -222,6 +235,9 @@ public class SingleTreeNode
 
             advance_state(state, acts);
             thisDepth++;
+
+            // Add the position in our new array after this node has been explored (exploration of the future)
+            hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
         }
 
 
@@ -247,6 +263,11 @@ public class SingleTreeNode
                 value += heuristicStubborn.evaluateState(a_gameState);
                 break;
                 //fall-through
+            case HEURISTIC_EXPLORE:
+            {
+                value = hExplore.evaluateState(a_gameState);
+                break;
+            }
             default: break;
         }
 
