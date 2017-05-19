@@ -5,6 +5,7 @@ import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
+import tracks.multiPlayer.advanced.prettycontroller.ucb.Bandit;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,8 +27,10 @@ public class Agent extends AbstractMultiPlayer {
 
     static InteractorHeuristic hInteract;
     public static int heuristic;
+    public int no_heuristics = 2;
     static final int HEURISTIC_DEFAULT = 0;
     static final int HEURISTIC_INTERACT = 1;
+    static Bandit ucb;
 
     /**
      * Public constructor with state observation and time due.
@@ -62,7 +65,8 @@ public class Agent extends AbstractMultiPlayer {
         mctsPlayer = getPlayer(so, elapsedTimer, NUM_ACTIONS, actions, id, oppID, no_players);
 
         hInteract = new InteractorHeuristic(so, playerID);
-        heuristic = HEURISTIC_INTERACT;
+        heuristic = HEURISTIC_DEFAULT;
+        ucb = new Bandit(no_heuristics);
 
     }
 
@@ -82,6 +86,11 @@ public class Agent extends AbstractMultiPlayer {
 
         //Set the state observation object as the new root of the tree.
         mctsPlayer.init(stateObs);
+
+        ucb.pullArm();
+        heuristic = ucb.x;
+
+        System.out.println(heuristic);
 
         //Determine the action using MCTS...
         int action = mctsPlayer.run(elapsedTimer);
