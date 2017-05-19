@@ -98,6 +98,10 @@ public class Bandit {
         }
     }
 
+    public double getReward() {
+        return deltaRewards[x];
+    }
+
     // returns true if reverting to old value
     public boolean revertOrKeep(double delta) {
         if (delta < 0) {
