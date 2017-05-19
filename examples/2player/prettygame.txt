@@ -4,7 +4,7 @@ BasicGame no_players=2
     goal  > Door color=GREEN img=oryx/doorclosed1
 
     movable >
-      avatar > ShootAvatar ammo=pickaxe img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
+      avatar > ShootAvatar ammo=pickaxe speed=0.5 img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
         avatarA > stype=proA
         avatarB > stype=proB
       enemy > RandomNPC cooldown=3 cons=15 img=oryx/bat1 speed=0.2
@@ -16,12 +16,14 @@ BasicGame no_players=2
 
     pickaxe > Resource value=1 limit=5 img=oryx/pickaxe
 
+
+
     wall > Immovable img=oryx/wall3 autotiling=True
 
     flighttime > Resource value=1 limit=5
-    pro > Missile speed=1 img=oryx/pickaxe
-        proA >
-        proB >
+    pro > Missile speed=1 cooldown=2 img=oryx/pickaxe
+        proA > singleton=true
+        proB > singleton=true
 
     win > Immovable invisible=true
         winA >
@@ -45,13 +47,12 @@ BasicGame no_players=2
     pro wall > stepBack
     pro wall > reverseDirection
 
-    pro floor > changeResource resource=flighttime value=1
-    pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
-    pro floor > killIfHasMore resource=flighttime limit=4
 
-    pro tank > killSprite
-    tank pro > spawn stype=pickaxe
+
+
     tank pro > bounceForward
+    pro tank > changeResource resource=flighttime value=4
+
 
     avatar pickaxe > changeResource resource=pickaxe
     pickaxe avatar > killSprite
@@ -60,8 +61,12 @@ BasicGame no_players=2
     pro EOS > wrapAround
 
     enemy pro > spawn stype=pickaxe
-    pro enemy > killSprite
+    pro enemy > changeResource resource=flighttime value=4
     enemy pro > killSprite
+
+    pro floor > changeResource resource=flighttime value=1
+    pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
+    pro floor > killIfHasMore resource=flighttime limit=4
 
     wall tank > killSprite
     movable wall > stepBack
