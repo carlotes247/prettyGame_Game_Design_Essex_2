@@ -4,12 +4,11 @@ BasicGame no_players=2
     goal  > Door color=GREEN img=oryx/doorclosed1
 
     movable >
-
       avatar > ShootAvatar ammo=pickaxe img=oryx/knight1 imgUp=oryx/alien1  imgDown=oryx/alien2 imgLeft=oryx/alien3 imgRight=oryx/angel1
         avatarA > stype=proA
         avatarB > stype=proB
-      enemy > RandomNPC cooldown=200 cons=15 img=oryx/bat1 speed=0.2
-      tank > Missile speed=0.01
+      enemy > RandomNPC cooldown=3 cons=15 img=oryx/bat1 speed=0.2
+      tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
 
@@ -21,6 +20,10 @@ BasicGame no_players=2
     pro > Missile speed=1 img=oryx/pickaxe
         proA >
         proB >
+
+    win > Immovable invisible=true
+        winA >
+        winB >
 
   LevelMapping
     g > floor goal
@@ -42,8 +45,9 @@ BasicGame no_players=2
     pro floor > spawnIfHasMore stype=pickaxe resource=flighttime limit=4
     pro floor > killIfHasMore resource=flighttime limit=4
 
-
-
+    pro tank > killSprite
+    tank pro > spawn stype=pickaxe
+    tank pro > bounceForward
 
     avatar pickaxe > changeResource resource=pickaxe
     pickaxe avatar > killSprite
@@ -61,11 +65,13 @@ BasicGame no_players=2
     wall tank > killSprite
     movable wall > stepBack
     movable EOS > wrapAround
-    goal avatar > killSprite scoreChange=1
+    goal avatarA > transformTo stype=winA
+    goal avatarB > transformTo stype=winB
     enemy enemy > stepBack
     avatar enemy tank > killSprite scoreChange=-1
 
   TerminationSet
-    SpriteCounter stype=goal   win=True,True
-    SpriteCounter stype=avatarA win=False,False
-    SpriteCounter stype=avatarB win=False,False
+    SpriteCounterMore stype=winA limit=1  win=True,False
+    SpriteCounterMore stype=winB limit=1   win=False,True
+    SpriteCounter stype=avatarA win=False,True
+    SpriteCounter stype=avatarB win=True,False

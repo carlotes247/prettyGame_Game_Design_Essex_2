@@ -4,6 +4,7 @@ import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
+import tracks.multiPlayer.advanced.prettycontroller.heuristics.InteractorHeuristic;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,6 +23,11 @@ public class Agent extends AbstractMultiPlayer {
     public int id, oppID, no_players;
 
     protected SingleMCTSPlayer mctsPlayer;
+
+    static InteractorHeuristic hInteract;
+    public static int heuristic;
+    static final int HEURISTIC_DEFAULT = 0;
+    static final int HEURISTIC_INTERACT = 1;
 
     /**
      * Public constructor with state observation and time due.
@@ -54,6 +60,10 @@ public class Agent extends AbstractMultiPlayer {
         //Create the player.
 
         mctsPlayer = getPlayer(so, elapsedTimer, NUM_ACTIONS, actions, id, oppID, no_players);
+
+        hInteract = new InteractorHeuristic(so, playerID);
+        heuristic = HEURISTIC_INTERACT;
+
     }
 
     public SingleMCTSPlayer getPlayer(StateObservationMulti so, ElapsedCpuTimer elapsedTimer, int[] NUM_ACTIONS, Types.ACTIONS[][] actions, int id, int oppID, int no_players) {
