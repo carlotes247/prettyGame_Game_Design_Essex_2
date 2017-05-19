@@ -77,7 +77,7 @@ public class Agent extends AbstractMultiPlayer {
         heuristicStubborn = new HeuristicStubborn(playerID);
         ucb = new Bandit(no_heuristics);
 
-
+        heuristic = HEURISTIC_STUBBORN;
     }
 
     public SingleMCTSPlayer getPlayer(StateObservationMulti so, ElapsedCpuTimer elapsedTimer, int[] NUM_ACTIONS, Types.ACTIONS[][] actions, int id, int oppID, int no_players) {
@@ -97,13 +97,14 @@ public class Agent extends AbstractMultiPlayer {
         //Set the state observation object as the new root of the tree.
         mctsPlayer.init(stateObs);
 
-        ucb.pullArm();
-        heuristic = ucb.x;
+//        ucb.pullArm();
+//        heuristic = ucb.x;
 
         //Determine the action using MCTS...
+//        System.out.println("Last Action: " + stateObs.getAvatarLastAction(id));
         int action = mctsPlayer.run(elapsedTimer);
 
-
+//        System.out.println("Action: " + actions[id][action]);
         //... and return it.
         return actions[id][action];
     }

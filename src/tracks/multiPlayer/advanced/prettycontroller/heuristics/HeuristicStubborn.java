@@ -10,38 +10,41 @@ public class HeuristicStubborn extends StateHeuristicMulti
 {
     double intrinsicScore;
     public int playerID;
+    Types.ACTIONS lastAction;
+    int multiplier;
 
     public HeuristicStubborn(int pid)
     {
         playerID = pid;
-        reset();
+        reset(Types.ACTIONS.ACTION_NIL);
     }
 
-    public void reset()
+    public void reset(Types.ACTIONS action)
     {
         intrinsicScore = 0;
+        lastAction = action;
+        multiplier = 1;
     };
 
     public double evaluateState(StateObservationMulti stateObs)
     {
+//        System.out.println("Value: " + intrinsicScore);
         return intrinsicScore;
     }
 
     public void update(StateObservationMulti stateObs, Types.ACTIONS[] acts, float depth)
     {
-        int sameMove = (acts[playerID] == stateObs.getAvatarLastAction(playerID)) ? 1 : 0;
-        int sameMoveBonus = 100;
-        int diffMoveBonus = 0;
-        int bonus = 100;
+//        System.out.print(acts[playerID] + ",");
+        int sameMove = (acts[playerID] == lastAction) ? 1 : 0;
+        int sameMoveBonus = 1;
+        int diffMoveBonus = -1;
 
         sameMoveBonus *= sameMove;
         diffMoveBonus *= (1-sameMove);
 
-        double depthMulti = (2*depth+1.0f);
+        intrinsicScore += (sameMoveBonus + diffMoveBonus)*multiplier;
 
-        intrinsicScore += sameMoveBonus/depthMulti;
-        intrinsicScore += diffMoveBonus*depthMulti;
-        intrinsicScore += 100;
+        if(sameMove == 0) multiplier = 0;
     }
 }
 

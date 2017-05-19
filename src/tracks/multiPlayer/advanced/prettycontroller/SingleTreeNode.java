@@ -84,7 +84,7 @@ public class SingleTreeNode
                 }
                 case HEURISTIC_STUBBORN:
                 {
-                    heuristicStubborn.reset();
+                    heuristicStubborn.reset(state.getAvatarLastAction(id));
                     break;
                 }
                 case HEURISTIC_EXPLORE:
@@ -262,7 +262,6 @@ public class SingleTreeNode
             case HEURISTIC_STUBBORN:
                 value += heuristicStubborn.evaluateState(a_gameState);
                 break;
-                //fall-through
             case HEURISTIC_EXPLORE:
             {
                 value = hExplore.evaluateState(a_gameState);
