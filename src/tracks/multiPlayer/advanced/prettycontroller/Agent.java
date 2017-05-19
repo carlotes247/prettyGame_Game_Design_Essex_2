@@ -90,8 +90,6 @@ public class Agent extends AbstractMultiPlayer {
         ucb.pullArm();
         heuristic = ucb.x;
 
-        System.out.println(heuristic);
-
         //Determine the action using MCTS...
         int action = mctsPlayer.run(elapsedTimer);
 
