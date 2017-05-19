@@ -11,6 +11,8 @@ BasicGame no_players=2
       tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
+        tankL > img=newset/tank_blueL orientation=LEFT
+        tankD > img=newset/tank_blueD orientation=DOWN
 
     pickaxe > Resource value=1 limit=5 img=oryx/pickaxe
 
@@ -32,8 +34,10 @@ BasicGame no_players=2
     e > floor enemy
     . > floor
     w > floor wall
-    t > floor tankR
-    o > floor tankU
+    r > floor tankR
+    u > floor tankU
+    l > floor tankL
+    d > floor tankD
     p > floor pickaxe
 
   InteractionSet
@@ -59,9 +63,6 @@ BasicGame no_players=2
     pro enemy > killSprite
     enemy pro > killSprite
 
-    avatarB proA > killSprite
-    avatarA proB > killSprite
-
     wall tank > killSprite
     movable wall > stepBack
     movable EOS > wrapAround
@@ -72,6 +73,4 @@ BasicGame no_players=2
 
   TerminationSet
     SpriteCounterMore stype=winA limit=1  win=True,False
-    SpriteCounterMore stype=winB limit=1   win=False,True
-    SpriteCounter stype=avatarA win=False,True
-    SpriteCounter stype=avatarB win=True,False
+    SpriteCounterMore stype=winB limit=1  win=False,True
