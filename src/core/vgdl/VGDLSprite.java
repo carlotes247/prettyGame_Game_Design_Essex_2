@@ -495,14 +495,16 @@ public abstract class VGDLSprite {
 
             ArrayList<Image> allImages;
             boolean isOrientedImg = (orientedImg != null);
-            if(!isOrientedImg)
+            if (!isOrientedImg)
                 allImages = images.get("NONE");
             else
                 allImages = images.get(Types.v2DirStr(orientation.getVector()));
 
-            currentFrame = (currentFrame + 1) % allImages.size();
-            frameRemaining = frameRate;
-            image = allImages.get(currentFrame);
+            if (allImages.size() > 0){
+                currentFrame = (currentFrame + 1) % allImages.size();
+                frameRemaining = frameRate;
+                image = allImages.get(currentFrame);
+            }
         }
     }
 

@@ -163,7 +163,10 @@ public class BasicGame extends Game {
 							avatars.add(s);
 						}
 						if (s.autotiling) {
-							s.image = s.images.get("NONE").get(similarTiles);
+
+							ArrayList<Image> images = s.images.get("NONE");
+							if(images.size() > 0)
+								s.image = images.get(similarTiles);
 						}
 						if (s.randomtiling >= 0) {
 							Random random = new Random(randomSeed);
