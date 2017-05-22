@@ -1,13 +1,12 @@
-package tracks.singlePlayer.advanced.interactor;
+package RHEA.sampleOLMCTS;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 import core.game.StateObservation;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
-
-import java.util.Random;
-
-import static tracks.singlePlayer.advanced.interactor.Agent.*;
 
 public class SingleTreeNode
 {
@@ -21,49 +20,44 @@ public class SingleTreeNode
     public int nVisits;
     public Random m_rnd;
     public int m_depth;
-    protected static double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
+    protected double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
     public int childIdx;
 
-    public int MCTS_ITERATIONS = 100;
-    public static int ROLLOUT_DEPTH = 10;
+    public int num_actions;
+    Types.ACTIONS[] actions;
+    public int ROLLOUT_DEPTH = 10;
     public double K = Math.sqrt(2);
-    public double REWARD_DISCOUNT = 1.00;
-    public int NUM_ACTIONS;
-    public Types.ACTIONS[] actions;
 
-    public StateObservation rootState;
+    public static StateObservation rootState;
+    static int count;
+    int MAX_NUM_CALLS;
 
-    public SingleTreeNode(Random rnd, int NUM_ACTIONS, Types.ACTIONS[] actions) {
-        this(null, -1, rnd, NUM_ACTIONS, actions);
+    public SingleTreeNode(Random rnd, int num_actions, Types.ACTIONS[] actions) {
+        this(null, -1, rnd, num_actions, actions);
     }
 
-    public SingleTreeNode(SingleTreeNode parent, int childIdx, Random rnd, int NUM_ACTIONS, Types.ACTIONS[] actions) {
+    public SingleTreeNode(SingleTreeNode parent, int childIdx, Random rnd, int num_actions, Types.ACTIONS[] actions) {
         this.parent = parent;
         this.m_rnd = rnd;
+        this.num_actions = num_actions;
+        this.actions = actions;
+        children = new SingleTreeNode[num_actions];
         totValue = 0.0;
         this.childIdx = childIdx;
         if(parent != null)
             m_depth = parent.m_depth+1;
         else
             m_depth = 0;
-        this.NUM_ACTIONS = NUM_ACTIONS;
-        children = new SingleTreeNode[NUM_ACTIONS];
-        this.actions = actions;
-
     }
 
 
     public void mctsSearch(ElapsedCpuTimer elapsedTimer) {
 
+
         double avgTimeTaken = 0;
         double acumTimeTaken = 0;
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
-
-        if (heuristic == HEURISTIC_INTERACT)
-            hInteract.update(rootState);
-        else if (heuristic == HEURISTIC_EXPLORER)
-            hExplorer.update(rootState);
 
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
@@ -71,16 +65,9 @@ public class SingleTreeNode
 
             StateObservation state = rootState.copy();
 
-            if (heuristic == HEURISTIC_INTERACT)
-                hInteract.reset();
-            else if (heuristic == HEURISTIC_EXPLORER)
-                hExplorer.reset();
-            else if (heuristic == HEURISTIC_STUBBORN)
-                hStubborn.reset(state.getAvatarLastAction());
-
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             SingleTreeNode selected = treePolicy(state);
-            double delta = selected.rollOut(state);
+            double delta = selected.rollOut(state,0);
             backUp(selected, delta);
 
             numIters++;
@@ -89,9 +76,34 @@ public class SingleTreeNode
             avgTimeTaken  = acumTimeTaken/numIters;
             remaining = elapsedTimer.remainingTimeMillis();
         }
+    }
 
+    public void mctsSearchCalls(int numCalls, int depth) {
 
-        //System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
+        ROLLOUT_DEPTH = depth;
+        MAX_NUM_CALLS = numCalls;
+
+        int lastCount = -1;
+        count = 0;
+        int numIters = 0;
+
+        int remainingLimit = 5;
+        while((count - lastCount) > 0 && (count + ROLLOUT_DEPTH) < MAX_NUM_CALLS){
+            //while(numIters < Agent.MCTS_ITERATIONS){
+            lastCount = count;
+            StateObservation state = rootState.copy();
+
+            //ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
+            SingleTreeNode selected = treePolicy(state);
+            double delta = selected.rollOut(state, MAX_NUM_CALLS);
+            backUp(selected, delta);
+
+            numIters++;
+//            acumTimeTaken += (elapsedTimerIteration.elapsedMillis()) ;
+            //System.out.println(elapsedTimerIteration.elapsedMillis() + " --> " + acumTimeTaken + " (" + remaining + ")");
+//            avgTimeTaken  = acumTimeTaken/numIters;
+//            remaining = elapsedTimer.remainingTimeMillis();
+        }
     }
 
     public SingleTreeNode treePolicy(StateObservation state) {
@@ -127,10 +139,10 @@ public class SingleTreeNode
         }
 
         //Roll the state
-        advance_state(state, actions[bestAction]);
+        state.advance(actions[bestAction]);
+        count++;
 
-
-        SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd, NUM_ACTIONS, actions);
+        SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd,num_actions, actions);
         children[bestAction] = tn;
         return tn;
     }
@@ -165,70 +177,58 @@ public class SingleTreeNode
         }
 
         //Roll the state:
-        advance_state(state, actions[selected.childIdx]);;
+        state.advance(actions[selected.childIdx]);
+        count++;
 
         return selected;
     }
 
-    void advance_state(StateObservation state, Types.ACTIONS act)
-    {
-        if (heuristic == HEURISTIC_STUBBORN)
-            hStubborn.update(state, act, m_depth);
-        state.advance(act);
-    }
 
-    public double rollOut(StateObservation state)
+    public double rollOut(StateObservation state, int numCalls)
     {
         int thisDepth = this.m_depth;
 
-        while (!finishRollout(state,thisDepth)) {
+        while (!finishRollout(state,thisDepth, numCalls)) {
 
-            //random move
-            advance_state(state, actions[m_rnd.nextInt(NUM_ACTIONS)]);
+            int action = m_rnd.nextInt(num_actions);
+            state.advance(actions[action]);
+            count++;
             thisDepth++;
         }
 
 
         double delta = value(state);
 
-//        System.out.println(delta);
+        if(delta < bounds[0])
+            bounds[0] = delta;
+        if(delta > bounds[1])
+            bounds[1] = delta;
+
+        //double normDelta = Utils.normalise(delta ,lastBounds[0], lastBounds[1]);
 
         return delta;
     }
 
     public double value(StateObservation a_gameState) {
 
-        double value = 0;
-
-        if (heuristic == HEURISTIC_INTERACT)
-            value = hInteract.evaluateState(a_gameState);
-        else if(heuristic == HEURISTIC_EXPLORER)
-            value = hExplorer.evaluateState(a_gameState);
-        else if(heuristic == HEURISTIC_STUBBORN)
-            value = hStubborn.evaluateState(a_gameState);
-
         boolean gameOver = a_gameState.isGameOver();
         Types.WINNER win = a_gameState.getGameWinner();
-        value += a_gameState.getGameScore();
+        double rawScore = a_gameState.getGameScore();
 
-        double normDelta = Utils.normalise(value, bounds[0], bounds[1]);
+        if(gameOver && win == Types.WINNER.PLAYER_LOSES)
+            rawScore += HUGE_NEGATIVE;
 
-        if(value < bounds[0])
-            bounds[0] = value;
-        if(value > bounds[1])
-            bounds[1] = value;
+        if(gameOver && win == Types.WINNER.PLAYER_WINS)
+            rawScore += HUGE_POSITIVE;
 
-        if(gameOver && (win == Types.WINNER.PLAYER_LOSES))
-            normDelta += HUGE_NEGATIVE;
-
-        if(gameOver && (win == Types.WINNER.PLAYER_WINS))
-            normDelta += HUGE_POSITIVE;
-
-        return normDelta;
+        return rawScore;
     }
 
-    public boolean finishRollout(StateObservation rollerState, int depth)
+    public boolean finishRollout(StateObservation rollerState, int depth, int numCalls)
     {
+        if (count >= numCalls)
+            return true;
+
         if(depth >= ROLLOUT_DEPTH)      //rollout end condition.
             return true;
 
@@ -249,7 +249,6 @@ public class SingleTreeNode
         }
     }
 
-    public double bestReward;
 
     public int mostVisitedAction() {
         int selected = -1;
@@ -287,10 +286,56 @@ public class SingleTreeNode
             selected = bestAction();
         }
 
-        bestReward = children[selected].totValue / children[selected].nVisits;
-        bestReward = Utils.normalise(bestReward, bounds[0], bounds[1]);
-
         return selected;
+    }
+
+    public ArrayList<Integer> mostVisitedActions(SingleTreeNode root) {
+
+        ArrayList<Integer> actions = new ArrayList<>();
+        int MIN_VISITS = 3;
+
+        SingleTreeNode current = root;
+
+        while (true) {
+            int selected = -1;
+            double bestValue = -Double.MAX_VALUE;
+            boolean allEqual = true;
+            double first = -1;
+
+            if (current == null || current.notFullyExpanded() && current.nVisits < MIN_VISITS) {
+                break;
+            }
+
+            for (int i = 0; i < children.length; i++) {
+
+                if (children[i] != null) {
+                    if (first == -1)
+                        first = children[i].nVisits;
+                    else if (first != children[i].nVisits) {
+                        allEqual = false;
+                    }
+
+                    double childValue = children[i].nVisits;
+                    childValue = Utils.noise(childValue, this.epsilon, this.m_rnd.nextDouble());     //break ties randomly
+                    if (childValue > bestValue) {
+                        bestValue = childValue;
+                        selected = i;
+                    }
+                }
+            }
+
+            if (selected == -1) {
+                System.out.println("Unexpected selection!");
+                selected = 0;
+            } else if (allEqual) {
+                //If all are equal, we opt to choose for the one with the best Q.
+                selected = bestAction(current);
+            }
+            current = current.children[selected];
+
+            actions.add(selected);
+        }
+        return actions;
     }
 
     public int bestAction()
@@ -303,6 +348,33 @@ public class SingleTreeNode
             if(children[i] != null) {
                 //double tieBreaker = m_rnd.nextDouble() * epsilon;
                 double childValue = children[i].totValue / (children[i].nVisits + this.epsilon);
+                childValue = Utils.noise(childValue, this.epsilon, this.m_rnd.nextDouble());     //break ties randomly
+                if (childValue > bestValue) {
+                    bestValue = childValue;
+                    selected = i;
+                }
+            }
+        }
+
+        if (selected == -1)
+        {
+            System.out.println("Unexpected selection!");
+            selected = 0;
+        }
+
+        return selected;
+    }
+
+    public int bestAction(SingleTreeNode n)
+    {
+        int selected = -1;
+        double bestValue = -Double.MAX_VALUE;
+
+        for (int i=0; i<n.children.length; i++) {
+
+            if(n.children[i] != null) {
+                //double tieBreaker = m_rnd.nextDouble() * epsilon;
+                double childValue = n.children[i].totValue / (n.children[i].nVisits + this.epsilon);
                 childValue = Utils.noise(childValue, this.epsilon, this.m_rnd.nextDouble());     //break ties randomly
                 if (childValue > bestValue) {
                     bestValue = childValue;
