@@ -192,6 +192,8 @@ public class SingleTreeNode
 
         if (heuristic == HEURISTIC_INTERACT)
             value = hInteract.evaluateState(a_gameState);
+        else if(heuristic == HEURISTIC_EXPLORER)
+            value = hExplorer.evaluateState(a_gameState);
 
         boolean gameOver = a_gameState.isGameOver();
         Types.WINNER win = a_gameState.getGameWinner();
