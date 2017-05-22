@@ -1,4 +1,4 @@
-package PrettyTeam.ucb;
+package tracks.singlePlayer.advanced.interactor.ucb;
 
 import java.util.ArrayList;
 import java.util.Random;

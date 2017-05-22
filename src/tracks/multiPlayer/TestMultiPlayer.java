@@ -19,7 +19,7 @@ public class TestMultiPlayer {
 	String sampleMCTSController = "tracks.multiPlayer.advanced.sampleMCTS.Agent";
 	String sampleRSController = "tracks.multiPlayer.advanced.sampleRS.Agent";
 	String sampleRHEAController = "tracks.multiPlayer.advanced.sampleRHEA.Agent";
-	String prettyController = "tracks.multiPlayer.advanced.prettycontroller.Agent";
+	String prettyController = "tracks.multiPlayer.advanced.interactor.Agent";
 
 	String humanController = "tracks.multiPlayer.tools.human.Agent";
 	String rokoController = "tracks.multiPlayer.rokasv.simple.Agent";

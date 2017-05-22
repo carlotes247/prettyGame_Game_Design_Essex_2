@@ -622,18 +622,18 @@ public class ArcadeMachine {
             ect.setMaxTimeMillis(CompetitionParameters.INITIALIZATION_TIME);
 
             if (so.getNoPlayers() < 2) { // single player
-            // Get the class and the constructor with arguments
-            // (StateObservation, long).
-            Class<? extends AbstractPlayer> controllerClass = Class.forName(playerName)
-                .asSubclass(AbstractPlayer.class);
-            Class[] gameArgClass = new Class[] { StateObservation.class, ElapsedCpuTimer.class };
-            Constructor controllerArgsConstructor = controllerClass.getConstructor(gameArgClass);
+				// Get the class and the constructor with arguments
+				// (StateObservation, long).
+				Class<? extends AbstractPlayer> controllerClass = Class.forName(playerName)
+					.asSubclass(AbstractPlayer.class);
+				Class[] gameArgClass = new Class[] { StateObservation.class, ElapsedCpuTimer.class };
+				Constructor controllerArgsConstructor = controllerClass.getConstructor(gameArgClass);
 
-            // Call the constructor with the appropriate parameters.
-            Object[] constructorArgs = new Object[] { so, ect.copy() };
+				// Call the constructor with the appropriate parameters.
+				Object[] constructorArgs = new Object[] { so, ect.copy() };
 
-            player = (AbstractPlayer) controllerArgsConstructor.newInstance(constructorArgs);
-            player.setPlayerID(playerID);
+				player = (AbstractPlayer) controllerArgsConstructor.newInstance(constructorArgs);
+				player.setPlayerID(playerID);
 
             } else { // multi player
             // Get the class and the constructor with arguments
