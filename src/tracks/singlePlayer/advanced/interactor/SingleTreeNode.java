@@ -1,14 +1,13 @@
-package PrettyTeam;
+package tracks.singlePlayer.advanced.interactor;
 
-import core.game.StateObservationMulti;
+import core.game.StateObservation;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
 
 import java.util.Random;
 
-import static PrettyTeam.Agent.*;
-
+import static tracks.singlePlayer.advanced.interactor.Agent.*;
 
 public class SingleTreeNode
 {
@@ -26,23 +25,19 @@ public class SingleTreeNode
     public int childIdx;
 
     public int MCTS_ITERATIONS = 100;
-    public int ROLLOUT_DEPTH = 10;
+    public static int ROLLOUT_DEPTH = 10;
     public double K = Math.sqrt(2);
     public double REWARD_DISCOUNT = 1.00;
-    public int[] NUM_ACTIONS;
-    public Types.ACTIONS[][] actions;
-    public int id, oppID, no_players;
+    public int NUM_ACTIONS;
+    public Types.ACTIONS[] actions;
 
-    public StateObservationMulti rootState;
+    public StateObservation rootState;
 
-    public SingleTreeNode(Random rnd, int[] NUM_ACTIONS, Types.ACTIONS[][] actions, int id, int oppID, int no_players) {
-        this(null, -1, rnd, id, oppID, no_players, NUM_ACTIONS, actions);
+    public SingleTreeNode(Random rnd, int NUM_ACTIONS, Types.ACTIONS[] actions) {
+        this(null, -1, rnd, NUM_ACTIONS, actions);
     }
 
-    public SingleTreeNode(SingleTreeNode parent, int childIdx, Random rnd, int id, int oppID, int no_players, int[] NUM_ACTIONS, Types.ACTIONS[][] actions) {
-        this.id = id;
-        this.oppID = oppID;
-        this.no_players = no_players;
+    public SingleTreeNode(SingleTreeNode parent, int childIdx, Random rnd, int NUM_ACTIONS, Types.ACTIONS[] actions) {
         this.parent = parent;
         this.m_rnd = rnd;
         totValue = 0.0;
@@ -52,7 +47,7 @@ public class SingleTreeNode
         else
             m_depth = 0;
         this.NUM_ACTIONS = NUM_ACTIONS;
-        children = new SingleTreeNode[NUM_ACTIONS[id]];
+        children = new SingleTreeNode[NUM_ACTIONS];
         this.actions = actions;
 
     }
@@ -65,36 +60,15 @@ public class SingleTreeNode
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        hInteract.setLastGameTick(rootState.getGameTick() - 1);
         hInteract.update(rootState);
-        hExplore.setLastGameTick(rootState.getGameTick() - 1);
-        hExplore.update(rootState);
 
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
             //while(numIters < Agent.MCTS_ITERATIONS){
 
-            StateObservationMulti state = rootState.copy();
+            StateObservation state = rootState.copy();
 
-            switch (heuristic)
-            {
-                case HEURISTIC_INTERACT:
-                {
-                    hInteract.reset();
-                    break;
-                }
-                case HEURISTIC_STUBBORN:
-                {
-                    heuristicStubborn.reset();
-                    break;
-                }
-                case HEURISTIC_EXPLORE:
-                {
-                    hExplore.reset();
-                    break;
-                }
-                default: break;
-            }
+            hInteract.reset();
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             SingleTreeNode selected = treePolicy(state);
@@ -112,7 +86,7 @@ public class SingleTreeNode
         //System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
     }
 
-    public SingleTreeNode treePolicy(StateObservationMulti state) {
+    public SingleTreeNode treePolicy(StateObservation state) {
 
         SingleTreeNode cur = this;
 
@@ -131,7 +105,7 @@ public class SingleTreeNode
     }
 
 
-    public SingleTreeNode expand(StateObservationMulti state) {
+    public SingleTreeNode expand(StateObservation state) {
 
         int bestAction = 0;
         double bestValue = -1;
@@ -145,29 +119,15 @@ public class SingleTreeNode
         }
 
         //Roll the state
+        advance_state(state, actions[bestAction]);
 
-        //need to provide actions for all players to advance the forward model
-        Types.ACTIONS[] acts = new Types.ACTIONS[no_players];
 
-        //set this agent's action
-        acts[id] = actions[id][bestAction];
-
-        //get actions available to the opponent and assume they will do a random action
-        Types.ACTIONS[] oppActions = actions[oppID];
-        acts[oppID] = oppActions[new Random().nextInt(oppActions.length)];
-
-        advance_state(state, acts);
-
-        // to do add future positions
-        // Add the position in our new array after this node has been explored (exploration of the future)
-        hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
-
-        SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd, id, oppID, no_players, NUM_ACTIONS, actions);
+        SingleTreeNode tn = new SingleTreeNode(this,bestAction,this.m_rnd, NUM_ACTIONS, actions);
         children[bestAction] = tn;
         return tn;
     }
 
-    public SingleTreeNode uct(StateObservationMulti state) {
+    public SingleTreeNode uct(StateObservation state) {
 
         SingleTreeNode selected = null;
         double bestValue = -Double.MAX_VALUE;
@@ -197,48 +157,25 @@ public class SingleTreeNode
         }
 
         //Roll the state:
-
-        //need to provide actions for all players to advance the forward model
-        Types.ACTIONS[] acts = new Types.ACTIONS[no_players];
-
-        //set this agent's action
-        acts[id] = actions[id][selected.childIdx];
-
-        //get actions available to the opponent and assume they will do a random action
-        Types.ACTIONS[] oppActions = actions[oppID];
-        acts[oppID] = oppActions[new Random().nextInt(oppActions.length)];
-
-        advance_state(state, acts);
-
-        // Add the position in our new array after this node has been explored (exploration of the future)
-        hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
+        advance_state(state, actions[selected.childIdx]);;
 
         return selected;
     }
 
-    void advance_state(StateObservationMulti state, Types.ACTIONS[] acts)
+    void advance_state(StateObservation state, Types.ACTIONS act)
     {
-        heuristicStubborn.update(state, acts, m_depth);
-        state.advance(acts);
+        state.advance(act);
     }
 
-    public double rollOut(StateObservationMulti state)
+    public double rollOut(StateObservation state)
     {
         int thisDepth = this.m_depth;
 
         while (!finishRollout(state,thisDepth)) {
 
-            //random move for all players
-            Types.ACTIONS[] acts = new Types.ACTIONS[no_players];
-            for (int i = 0; i < no_players; i++) {
-                acts[i] = actions[i][m_rnd.nextInt(NUM_ACTIONS[i])];
-            }
-
-            advance_state(state, acts);
+            //random move
+            advance_state(state, actions[m_rnd.nextInt(NUM_ACTIONS)]);
             thisDepth++;
-
-            // Add the position in our new array after this node has been explored (exploration of the future)
-            hExplore.addFuturePosition(state.getAvatarPosition(id), m_depth);
         }
 
 
@@ -249,34 +186,16 @@ public class SingleTreeNode
         return delta;
     }
 
-    public double value(StateObservationMulti a_gameState) {
+    public double value(StateObservation a_gameState) {
 
         double value = 0;
 
-        switch (heuristic)
-        {
-            case HEURISTIC_INTERACT:
-            {
-                value = hInteract.evaluateState(a_gameState);
-                break;
-            }
-            case HEURISTIC_STUBBORN:
-                value += heuristicStubborn.evaluateState(a_gameState);
-                break;
-                //fall-through
-            case HEURISTIC_EXPLORE:
-            {
-                value = hExplore.evaluateState(a_gameState);
-                break;
-            }
-            default: break;
-        }
-
+        if (heuristic == HEURISTIC_INTERACT)
+            value = hInteract.evaluateState(a_gameState);
 
         boolean gameOver = a_gameState.isGameOver();
-        Types.WINNER win = a_gameState.getMultiGameWinner()[id];
-        Types.WINNER oppWin = a_gameState.getMultiGameWinner()[(id + 1) % a_gameState.getNoPlayers()];;
-        value += a_gameState.getGameScore(id);
+        Types.WINNER win = a_gameState.getGameWinner();
+        value += a_gameState.getGameScore();
 
         double normDelta = Utils.normalise(value, bounds[0], bounds[1]);
 
@@ -285,16 +204,16 @@ public class SingleTreeNode
         if(value > bounds[1])
             bounds[1] = value;
 
-        if(gameOver && (win == Types.WINNER.PLAYER_LOSES || oppWin == Types.WINNER.PLAYER_WINS))
+        if(gameOver && (win == Types.WINNER.PLAYER_LOSES))
             normDelta += HUGE_NEGATIVE;
 
-        if(gameOver && (win == Types.WINNER.PLAYER_WINS || oppWin == Types.WINNER.PLAYER_LOSES))
+        if(gameOver && (win == Types.WINNER.PLAYER_WINS))
             normDelta += HUGE_POSITIVE;
 
         return normDelta;
     }
 
-    public boolean finishRollout(StateObservationMulti rollerState, int depth)
+    public boolean finishRollout(StateObservation rollerState, int depth)
     {
         if(depth >= ROLLOUT_DEPTH)      //rollout end condition.
             return true;
@@ -312,12 +231,6 @@ public class SingleTreeNode
         {
             n.nVisits++;
             n.totValue += result;
-            if (result < bounds[0]) {
-                bounds[0] = result;
-            }
-            if (result > bounds[1]) {
-                bounds[1] = result;
-            }
             n = n.parent;
         }
     }

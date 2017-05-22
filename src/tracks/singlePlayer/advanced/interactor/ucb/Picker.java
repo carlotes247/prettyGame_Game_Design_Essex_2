@@ -1,5 +1,5 @@
 
-package PrettyTeam.ucb;
+package tracks.singlePlayer.advanced.interactor.ucb;
 
 public class Picker<T> {
     // keeps just the best item so far

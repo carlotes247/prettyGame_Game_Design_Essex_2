@@ -1,13 +1,12 @@
-package PrettyTeam;
+package tracks.singlePlayer.advanced.interactor;
 
-import core.game.StateObservationMulti;
+import core.game.StateObservation;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 
 import java.util.Random;
 
-import static PrettyTeam.Agent.heuristic;
-import static PrettyTeam.Agent.ucb;
+import static tracks.singlePlayer.advanced.interactor.Agent.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,44 +16,38 @@ import static PrettyTeam.Agent.ucb;
  */
 public class SingleMCTSPlayer
 {
-
-
     /**
      * Root of the tree.
      */
     public SingleTreeNode m_root;
     public int intrinsicScore;
 
-    int[] NUM_ACTIONS;
-    Types.ACTIONS[][] actions;
+    int NUM_ACTIONS;
+    Types.ACTIONS[] actions;
 
     /**
      * Random generator.
      */
     public Random m_rnd;
-    public int id, oppID, no_players;
 
 
-    public SingleMCTSPlayer(Random a_rnd, int[] NUM_ACTIONS, Types.ACTIONS[][] actions, int id, int oppID, int no_players)
+    public SingleMCTSPlayer(Random a_rnd, int NUM_ACTIONS, Types.ACTIONS[] actions)
     {
         intrinsicScore = 0;
         m_rnd = a_rnd;
         this.NUM_ACTIONS = NUM_ACTIONS;
         this.actions = actions;
-        this.id = id;
-        this.oppID = oppID;
-        this.no_players = no_players;
     }
 
     /**
      * Inits the tree with the new observation state in the root.
      * @param a_gameState current state of the game.
      */
-    public void init(StateObservationMulti a_gameState)
+    public void init(StateObservation a_gameState)
     {
         //Set the game observation to a newly root node.
         //System.out.println("learning_style = " + learning_style);
-        m_root = new SingleTreeNode(m_rnd, NUM_ACTIONS, actions, id, oppID, no_players);
+        m_root = new SingleTreeNode(m_rnd, NUM_ACTIONS, actions);
         m_root.rootState = a_gameState;
     }
 
@@ -70,12 +63,12 @@ public class SingleMCTSPlayer
 
         //Determine the best action to take and return it.
         int action = m_root.mostVisitedAction();
-        //int action = m_root.bestAction();
+//        int action = m_root.bestAction();
 
-        ucb.applyReward(m_root.bestReward);
-        if(ucb.revertOrKeep(m_root.bestReward)) {
-            heuristic = ucb.x;
-        }
+//        ucb.applyReward(m_root.bestReward);
+//        if(ucb.revertOrKeep(m_root.bestReward)) {
+//            heuristic = ucb.x;
+//        }
 
         return action;
     }
