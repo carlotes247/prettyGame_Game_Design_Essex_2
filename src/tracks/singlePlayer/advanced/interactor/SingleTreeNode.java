@@ -60,7 +60,6 @@ public class SingleTreeNode
         long remaining = elapsedTimer.remainingTimeMillis();
         int numIters = 0;
 
-        hInteract.setLastGameTick(rootState.getGameTick() - 1);
         hInteract.update(rootState);
 
         int remainingLimit = 5;

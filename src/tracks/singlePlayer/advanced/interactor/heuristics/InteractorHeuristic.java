@@ -61,11 +61,11 @@ public class InteractorHeuristic extends StateHeuristic {
     private void updateEvents(StateObservation stateObs, ArrayList<Integer> objects) {
         if (stateObs != null) {
             for (Event e : stateObs.getEventsHistory()) {
-                if (!objects.contains(e.activeSpriteId)) {
-                    objects.add(e.activeSpriteId);
+                if (!objects.contains(e.activeTypeId)) {
+                    objects.add(e.activeTypeId);
                 }
                 if (!objects.contains(e.passiveSpriteId)) {
-                    objects.add(e.passiveSpriteId);
+                    objects.add(e.passiveTypeId);
                 }
             }
         }
