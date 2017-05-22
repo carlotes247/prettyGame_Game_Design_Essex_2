@@ -5,6 +5,7 @@ import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tracks.singlePlayer.advanced.interactor.heuristics.ExplorerHeuristic;
+import tracks.singlePlayer.advanced.interactor.heuristics.HeuristicStubborn;
 import tracks.singlePlayer.advanced.interactor.heuristics.InteractorHeuristic;
 import tracks.singlePlayer.advanced.interactor.ucb.Bandit;
 
@@ -27,11 +28,13 @@ public class Agent extends AbstractPlayer {
 
     static InteractorHeuristic hInteract;
     static ExplorerHeuristic hExplorer;
+    static HeuristicStubborn hStubborn;
     public static int heuristic;
-    public int no_heuristics = 3;
+    public int no_heuristics = 4;
     static final int HEURISTIC_DEFAULT = 0;
     static final int HEURISTIC_INTERACT = 1;
     static final int HEURISTIC_EXPLORER = 2;
+    static final int HEURISTIC_STUBBORN = 3;
     static Bandit ucb;
 
     /**
@@ -56,10 +59,12 @@ public class Agent extends AbstractPlayer {
 
         hInteract = new InteractorHeuristic(so);
         hExplorer = new ExplorerHeuristic(so, getPlayerID());
+        hStubborn = new HeuristicStubborn(getPlayerID());
 //        ucb = new Bandit(no_heuristics);
 
         heuristic = HEURISTIC_INTERACT;
         heuristic = HEURISTIC_EXPLORER;
+        heuristic = HEURISTIC_STUBBORN;
     }
 
     public SingleMCTSPlayer getPlayer(StateObservation so, ElapsedCpuTimer elapsedTimer, int NUM_ACTIONS, Types.ACTIONS[] actions) {

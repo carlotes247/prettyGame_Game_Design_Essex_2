@@ -61,6 +61,7 @@ public class SingleTreeNode
         int numIters = 0;
 
         hInteract.update(rootState);
+        hExplorer.update(rootState);
 
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
@@ -69,6 +70,8 @@ public class SingleTreeNode
             StateObservation state = rootState.copy();
 
             hInteract.reset();
+            hExplorer.reset();
+            hStubborn.reset(state.getAvatarLastAction());
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             SingleTreeNode selected = treePolicy(state);
@@ -194,6 +197,8 @@ public class SingleTreeNode
             value = hInteract.evaluateState(a_gameState);
         else if(heuristic == HEURISTIC_EXPLORER)
             value = hExplorer.evaluateState(a_gameState);
+        else if(heuristic == HEURISTIC_STUBBORN)
+            value = hStubborn.evaluateState(a_gameState);
 
         boolean gameOver = a_gameState.isGameOver();
         Types.WINNER win = a_gameState.getGameWinner();
