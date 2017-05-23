@@ -31,10 +31,10 @@ public class Agent extends AbstractPlayer {
     static HeuristicStubborn hStubborn;
     public static int heuristic;
     public static final int no_heuristics = 4;
-    public static final int HEURISTIC_DEFAULT = 0;
-    public static final int HEURISTIC_INTERACT = 1;
-    public static final int HEURISTIC_EXPLORER = 2;
-    public static final int HEURISTIC_STUBBORN = 3;
+    public static final int HEURISTIC_DEFAULT = 1;
+    public static final int HEURISTIC_INTERACT = 2;
+    public static final int HEURISTIC_EXPLORER = 3;
+    public static final int HEURISTIC_STUBBORN = 4;
     static Bandit ucb;
 
     /**

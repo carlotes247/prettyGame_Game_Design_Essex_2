@@ -15,6 +15,7 @@ import tools.Vector2d;
 import static RHEA.utils.Constants.*;
 import static tracks.singlePlayer.advanced.interactor.Agent.HEURISTIC_DEFAULT;
 import static tracks.singlePlayer.advanced.interactor.Agent.heuristic;
+import static tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
 
 import java.awt.*;
 import java.util.*;
@@ -29,6 +30,7 @@ public class Agent {
     String game = gamesPath + games[0] + ".txt";
     String level1 = gamesPath + games[0] + "_lvl" + 0 + ".txt";
     String controller = "tracks.singlePlayer.advanced.interactor.Agent";
+    String simpleController = "tracks.singlePlayer.advanced.simple.Agent";
     int[] dims;
     Individual worst;
 
@@ -103,20 +105,26 @@ public class Agent {
     private double evaluate(Individual individual) {
         double value = 0;
 
-        int no_heuristics = tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
-        double[][] scores = new double[no_heuristics][];
+        int no_agents = no_heuristics + 1;
+        double[][] scores = new double[no_agents][];
         int[] seed = new int[params.RESAMPLE];
 
-        int bonus = 100;
+        int bonus = 1000;
 
-        for (int i = 0; i < no_heuristics; i++) {
-            tracks.singlePlayer.advanced.interactor.Agent.heuristic = i;
+        for (int i = 0; i < no_agents; i++) {
+            String playController;
+            if (i == 0)
+                playController = simpleController;
+            else {
+                playController = controller;
+                heuristic = i;
+            }
             double totWin = 0;
             double totSc = 0;
             for (int j = 0; j < params.RESAMPLE; j++) {
                 if (i == 0) //set seed, keep for all algorithms
                     seed[j] = new Random().nextInt();
-                scores[i] = dm.runOneGame(individual.actions, game, level1, false, controller, null, seed[j], 0);
+                scores[i] = dm.runOneGame(individual.actions, game, level1, false, playController, null, seed[j], 0);
                 totWin += scores[i][0];
                 totSc += scores[i][1];
             }
@@ -124,8 +132,8 @@ public class Agent {
             totWin /= params.RESAMPLE;
             totSc /= params.RESAMPLE;
 
-            if ( i == 0 )
-                value = -totWin*bonus*no_heuristics - totSc*no_heuristics;
+            if ( i <= 1 )
+                value = -totWin*bonus*no_agents/2 - totSc*no_agents/2;
             else
                 value += totWin*bonus + totSc;
         }
@@ -151,11 +159,10 @@ public class Agent {
 
     }
 
-
-
     private void init_pop(int[] dims) {
 
         this.dims = dims;
+        params.SIMULATION_DEPTH = dims.length;
 
         population = new Individual[params.POPULATION_SIZE];
             nextPop = new Individual[params.POPULATION_SIZE];
@@ -166,7 +173,6 @@ public class Agent {
                     population[i] = new Individual(params.SIMULATION_DEPTH, dims, randomGenerator);
                 }
             }
-
 
         bandits = new BanditArray(population, dims);
 
@@ -191,6 +197,7 @@ public class Agent {
             dims[i] = rhea.dm.getDimSize(i);
         }
         rhea.dm.printDimensions();
+
         rhea.init_pop(dims);
         rhea.run();
     }

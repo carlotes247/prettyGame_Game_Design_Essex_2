@@ -31,7 +31,7 @@ public class ParameterSet {
     public boolean REEVALUATE = false;
     public int MUTATION = 1;
     public int TOURNAMENT_SIZE = 2;
-    public int RESAMPLE = 3; //try 1,2,3
+    public int RESAMPLE = 2;
     public int ELITISM = 1;
     public double DISCOUNT = 1; //0.99;
     public double SHIFT_DISCOUNT = 0.99;
