@@ -72,11 +72,11 @@ public class TestGameSpace {
 
 
         //1. Play as a human.
-        dm.playGame(individual, game, level1, seed);
+//        dm.playGame(individual, game, level1, seed);
 
         //2. Play with a controller.
-//        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
-//        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
+        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
+        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
 
 
         //3. Random Search test.
