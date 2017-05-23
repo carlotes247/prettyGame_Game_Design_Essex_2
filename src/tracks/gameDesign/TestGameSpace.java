@@ -22,6 +22,8 @@ public class TestGameSpace {
         String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
         String repeatOLETS = "tracks.singlePlayer.tools.repeatOLETS.Agent";
 
+        String interactorController = "tracks.singlePlayer.advanced.interactor.Agent";
+
 
         // Available games:
         String gamesPath = "examples/gameDesign/";
@@ -30,15 +32,15 @@ public class TestGameSpace {
 
 
         // All public games
-        games = new String[] { "aliens", "seaquest" }; 				// 0
+        games = new String[] { "prettygame"}; 				// 0
 
         // Other settings
         boolean visuals = true;
-        int seed = new Random().nextInt();
 
         // Game and level to play
         int gameIdx = 0;
         int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
+        int seed = new Random().nextInt();
 
         String game = gamesPath + games[gameIdx] + ".txt";
         String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
@@ -63,21 +65,22 @@ public class TestGameSpace {
 
         //0.b: Creating a new individual with an int[]:
         //    Each parameter will take a value = "lower_bound + i*increment" in the order defined in VGDL
-//      int[] individual = new int[]{0,1,2,14,1,4,9,1,5,5,2,4};
+//       individual = new int[]{0,1,0,1,0,1};
 
         //We can print a report with the parameters and values:
-        dm.printValues(individual);
+//        dm.printValues(individual);
 
 
         //1. Play as a human.
 //        dm.playGame(individual, game, level1, seed);
 
         //2. Play with a controller.
-        dm.runOneGame(individual, game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
+        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 0;
+        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
 
 
         //3. Random Search test.
-//        int NUM_TRIALS = 10;
+//        int NUM_TRIALS = 2000;
 //        individual = new int[dm.getNumDimensions()];
 //        int[] best = new int[dm.getNumDimensions()];
 //        double bestFit = -Integer.MAX_VALUE;
@@ -87,16 +90,21 @@ public class TestGameSpace {
 //            for(int i = 0; i < individual.length; ++i)
 //                individual[i] = new Random().nextInt(dm.getDimSize(i));
 //
-//            dm.printValues(individual);
+////            dm.printValues(individual);
 //
-//            double[] result = dm.runOneGame(individual, game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
-//            double fit = 1000.0 * result[0] + result[1]; //win + score
+//            double fit = evaluate(individual,dm,game,level1,interactorController);
 //
 //            if(fit > bestFit)
 //            {
 //                bestFit = fit;
 //                System.arraycopy(individual, 0, best, 0, dm.getNumDimensions());
 //            }
+//
+//            System.out.print(count + " -- " + bestFit + ": ");
+//            for (int i = 0; i < best.length; i++) {
+//                System.out.print(best[i] + " ");
+//            }
+//            System.out.println();
 //
 //        }
 //
@@ -106,5 +114,38 @@ public class TestGameSpace {
 //        System.out.println("##########################");
 //        dm.runOneGame(individual, game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
 //        dm.printDimensions();
+    }
+
+
+    private static double evaluate(int[] individual, DesignMachine dm, String game, String level1, String controller) {
+        double value = 0;
+
+        int seed = new Random().nextInt();
+
+        int no_heuristics = tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
+        double[][] scores = new double[no_heuristics][];
+
+        int bonus = 1000;
+
+        for (int i = 0; i < no_heuristics; i++) {
+            tracks.singlePlayer.advanced.interactor.Agent.heuristic = i;
+            double totWin = 0;
+            double totSc = 0;
+            for (int j = 0; j < 3; j++) {
+                scores[i] = dm.runOneGame(individual, game, level1, false, controller, null, seed, 0);
+                totWin += scores[i][0];
+                totSc += scores[i][1];
+            }
+
+            totWin /= 2;
+            totSc /= 3;
+
+            if ( i == 0 )
+                value = -totWin*bonus*no_heuristics - totSc*no_heuristics;
+            else
+                value += totWin*bonus + totSc;
+        }
+
+        return value;
     }
 }
