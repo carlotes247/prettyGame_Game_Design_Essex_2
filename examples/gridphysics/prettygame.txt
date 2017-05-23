@@ -5,7 +5,7 @@ BasicGame square_size=30
     goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar  > ShootAvatar ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
+      avatar  > ShootAvatar rotateInPlace=false ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
       enemy > Chaser stype=avatar img=oryx/bat1 speed=0.1
       tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
@@ -46,8 +46,6 @@ BasicGame square_size=30
     . > floor
     * > floor2
     w > floor wall
-    c > floor wall coin
-    $ > floor coin
     r > floor tankR
     u > floor tankU
     l > floor tankL

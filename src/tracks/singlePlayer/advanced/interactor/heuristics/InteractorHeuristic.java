@@ -50,7 +50,7 @@ public class InteractorHeuristic extends StateHeuristic {
         // If no new sprites have been interacted with, subtract distance to closest new sprite
         // to nudge agent to move towards sprites it has not interacted with yet
         if (newObjects.size() == objects.size()) {
-            rawScore += findNewEvent(stateObs);
+            rawScore += findNewEvent(stateObs)/100;
         }
 
 //        System.out.println(newObjects);

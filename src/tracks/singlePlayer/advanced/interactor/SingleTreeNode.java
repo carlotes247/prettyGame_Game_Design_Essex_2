@@ -202,6 +202,7 @@ public class SingleTreeNode
 
         if (heuristic == HEURISTIC_INTERACT)
             value = hInteract.evaluateState(a_gameState);
+//            value=0;
         else if(heuristic == HEURISTIC_EXPLORER)
             value = hExplorer.evaluateState(a_gameState);
         else if(heuristic == HEURISTIC_STUBBORN)

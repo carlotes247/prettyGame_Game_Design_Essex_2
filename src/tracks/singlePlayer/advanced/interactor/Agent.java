@@ -62,9 +62,7 @@ public class Agent extends AbstractPlayer {
         hStubborn = new HeuristicStubborn(getPlayerID());
 //        ucb = new Bandit(no_heuristics);
 
-        heuristic = HEURISTIC_INTERACT;
         heuristic = HEURISTIC_EXPLORER;
-        heuristic = HEURISTIC_STUBBORN;
     }
 
     public SingleMCTSPlayer getPlayer(StateObservation so, ElapsedCpuTimer elapsedTimer, int NUM_ACTIONS, Types.ACTIONS[] actions) {

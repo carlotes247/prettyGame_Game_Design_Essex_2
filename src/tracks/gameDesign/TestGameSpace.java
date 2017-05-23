@@ -65,18 +65,18 @@ public class TestGameSpace {
 
         //0.b: Creating a new individual with an int[]:
         //    Each parameter will take a value = "lower_bound + i*increment" in the order defined in VGDL
-       individual = new int[]{0,1,0,1,0,1};
+//       individual = new int[]{0,1,0,1,0,1};
 
         //We can print a report with the parameters and values:
 //        dm.printValues(individual);
 
 
         //1. Play as a human.
-//        dm.playGame(individual, game, level1, seed);
+        dm.playGame(individual, game, level1, seed);
 
         //2. Play with a controller.
-        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
-        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
+//        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
+//        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
 
 
         //3. Random Search test.
