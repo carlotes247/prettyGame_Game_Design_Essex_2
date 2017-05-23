@@ -103,10 +103,9 @@ public class Agent {
     private double evaluate(Individual individual) {
         double value = 0;
 
-        int seed = new Random().nextInt();
-
         int no_heuristics = tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
         double[][] scores = new double[no_heuristics][];
+        int[] seed = new int[params.RESAMPLE];
 
         int bonus = 1000;
 
@@ -115,7 +114,9 @@ public class Agent {
             double totWin = 0;
             double totSc = 0;
             for (int j = 0; j < params.RESAMPLE; j++) {
-                scores[i] = dm.runOneGame(individual.actions, game, level1, false, controller, null, seed, 0);
+                if (i == 0)
+                    seed[j] = new Random().nextInt();
+                scores[i] = dm.runOneGame(individual.actions, game, level1, false, controller, null, seed[j], 0);
                 totWin += scores[i][0];
                 totSc += scores[i][1];
             }

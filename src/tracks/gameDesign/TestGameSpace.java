@@ -65,7 +65,7 @@ public class TestGameSpace {
 
         //0.b: Creating a new individual with an int[]:
         //    Each parameter will take a value = "lower_bound + i*increment" in the order defined in VGDL
-//      int[] individual = new int[]{0,1,2,14,1,4,9,1,5,5,2,4};
+       individual = new int[]{0,1,0,1,0,1};
 
         //We can print a report with the parameters and values:
 //        dm.printValues(individual);
@@ -75,44 +75,45 @@ public class TestGameSpace {
 //        dm.playGame(individual, game, level1, seed);
 
         //2. Play with a controller.
-//        dm.runOneGame(individual, game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
+        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
+        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
 
 
         //3. Random Search test.
-        int NUM_TRIALS = 2000;
-        individual = new int[dm.getNumDimensions()];
-        int[] best = new int[dm.getNumDimensions()];
-        double bestFit = -Integer.MAX_VALUE;
-        visuals = false;
-        for(int count = 0; count < NUM_TRIALS; ++count)
-        {
-            for(int i = 0; i < individual.length; ++i)
-                individual[i] = new Random().nextInt(dm.getDimSize(i));
-
-//            dm.printValues(individual);
-
-            double fit = evaluate(individual,dm,game,level1,interactorController);
-
-            if(fit > bestFit)
-            {
-                bestFit = fit;
-                System.arraycopy(individual, 0, best, 0, dm.getNumDimensions());
-            }
-
-            System.out.print(count + " -- " + bestFit + ": ");
-            for (int i = 0; i < best.length; i++) {
-                System.out.print(best[i] + " ");
-            }
-            System.out.println();
-
-        }
-
-        visuals = true;
-        System.out.println("##########################");
-        System.out.println("Best individual with fitness " + bestFit);
-        System.out.println("##########################");
-        dm.runOneGame(individual, game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
-        dm.printDimensions();
+//        int NUM_TRIALS = 2000;
+//        individual = new int[dm.getNumDimensions()];
+//        int[] best = new int[dm.getNumDimensions()];
+//        double bestFit = -Integer.MAX_VALUE;
+//        visuals = false;
+//        for(int count = 0; count < NUM_TRIALS; ++count)
+//        {
+//            for(int i = 0; i < individual.length; ++i)
+//                individual[i] = new Random().nextInt(dm.getDimSize(i));
+//
+////            dm.printValues(individual);
+//
+//            double fit = evaluate(individual,dm,game,level1,interactorController);
+//
+//            if(fit > bestFit)
+//            {
+//                bestFit = fit;
+//                System.arraycopy(individual, 0, best, 0, dm.getNumDimensions());
+//            }
+//
+//            System.out.print(count + " -- " + bestFit + ": ");
+//            for (int i = 0; i < best.length; i++) {
+//                System.out.print(best[i] + " ");
+//            }
+//            System.out.println();
+//
+//        }
+//
+//        visuals = true;
+//        System.out.println("##########################");
+//        System.out.println("Best individual with fitness " + bestFit);
+//        System.out.println("##########################");
+//        dm.runOneGame(individual, game, level1, visuals, sampleMCTSController, recordActionsFile, seed, 0);
+//        dm.printDimensions();
     }
 
 
@@ -136,7 +137,7 @@ public class TestGameSpace {
                 totSc += scores[i][1];
             }
 
-            totWin /= 3;
+            totWin /= 2;
             totSc /= 3;
 
             if ( i == 0 )

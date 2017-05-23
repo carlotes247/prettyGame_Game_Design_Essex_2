@@ -34,7 +34,7 @@ GameSpace square_size=30
 
   LevelMapping
     g > floor goal
-    A > floor avatar
+    A > floor avatar pcq
     e > floor enemy
     . > floor
     * > floor2

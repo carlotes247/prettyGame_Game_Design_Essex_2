@@ -287,8 +287,6 @@ public class SingleTreeNode
             selected = bestAction();
         }
 
-        bestReward = children[selected].totValue / children[selected].nVisits;
-        bestReward = Utils.normalise(bestReward, bounds[0], bounds[1]);
 
         return selected;
     }
