@@ -91,7 +91,7 @@ public class Agent extends AbstractPlayer
             remaining = elapsedTimer.remainingTimeMillis();
         }
 
-        System.out.println(remaining);
+//        System.out.println(remaining);
 
         repeatsDone++;
         if(repeatsDone == maxRepeats)
@@ -101,7 +101,7 @@ public class Agent extends AbstractPlayer
 
         if(panic)
         {
-            System.out.println("AAAAAaaaAA");
+//            System.out.println("AAAAAaaaAA");
             action = change_action(stateObs);
             lastAction = action;
         }
