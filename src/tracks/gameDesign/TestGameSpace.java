@@ -23,6 +23,7 @@ public class TestGameSpace {
         String repeatOLETS = "tracks.singlePlayer.tools.repeatOLETS.Agent";
 
         String interactorController = "tracks.singlePlayer.advanced.interactor.Agent";
+        String simpleController = "tracks.singlePlayer.advanced.simple.Agent";
 
 
         // Available games:
@@ -122,7 +123,7 @@ public class TestGameSpace {
 
         int seed = new Random().nextInt();
 
-        int no_heuristics = tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
+        int no_heuristics = 3;//tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
         double[][] scores = new double[no_heuristics][];
 
         int bonus = 1000;
