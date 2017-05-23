@@ -1,13 +1,13 @@
-BasicGame square_size=30
+GameSpace square_size=30
   SpriteSet
     floor > Immovable img=world_NES_sliced/58 hidden=True
     floor2 > Immovable img=world_NES_sliced/2  hidden=True
     goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar  > ShootAvatar rotateInPlace=false ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
-      enemy > Chaser stype=avatar img=oryx/bat1 speed=0.1
-      tank > Missile speed=0.05
+      avatar  > ShootAvatar  rotateInPlace=false ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
+      enemy > Chaser stype=avatar img=oryx/bat1 speed=BATSPEED
+      tank > Missile speed=TANKSPEED
         tankR > img=newset/tank_blueR orientation=RIGHT
         tankU > img=newset/tank_blue orientation=UP
         tankL > img=newset/tank_blueL orientation=LEFT
@@ -15,17 +15,13 @@ BasicGame square_size=30
 
     #Tick counter
     #Quiescent tick counter
-    pcq > Immovable invisible=True
+    pcq > Immovable invisible=True hidden=True
     #Active tick counter
-    pca > SpawnPoint stype=pc invisible=True
+    pca > SpawnPoint stype=pc invisible=True hidden=True
     #Tick count
-    pc > Immovable invisible=True
+    pc > Immovable invisible=True hidden=True
     #Termination state
-    dead > Immovable invisible=True
-
-    pickaxe_penalty > Immovable invisible=true
-    pickaxe_penalty2 > Immovable invisible=true
-    pickaxe_penalty3 > Immovable invisible=true
+    dead > Immovable invisible=True hidden=True
 
     timebonus > SpawnPoint stype=timebonus_tick invisible=true
     timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=700 invisible=true
@@ -33,25 +29,30 @@ BasicGame square_size=30
     timebonus_maxticks > Immovable invisible=true
     timebonus_start > Immovable invisible=true
 
-    paspawn > SpawnPoint stype=pam prob=0.1 cooldown=20 invisible=True
-    pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True
-    pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
+    pickaxe_penalty > Immovable invisible=true
+    pickaxe_penalty2 > Immovable invisible=true
+    pickaxe_penalty3 > Immovable invisible=true
 
-    coin > Resource value=1 img=oryx/coin1
+    paspawn > SpawnPoint stype=pam prob=0.1 cooldown=PAXECD invisible=True hidden=True
+    pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True hidden=True
+    pickaxe > Resource value=1 limit=LPAXE img=oryx/pickaxe
+
     destroy > Immovable hidden=True invisible=True
 
     wall > Immovable img=world_NES_sliced/wall1
+    trap > Immovable img=world_NES_sliced/wall1 hidden=True invisible=True
     pro > Missile speed=1 img=oryx/pickaxe singleton=True
 
     gold > Passive img=oryx/gold3
 
   LevelMapping
     g > floor goal
-    A > floor avatar pcq pickaxe_penalty timebonus timebonus_limit timebonus_start
+    A > floor avatar pcq pickaxe_penalty  timebonus timebonus_limit timebonus_start
     e > floor enemy
     . > floor
     * > floor2
     w > floor wall
+    t > floor trap wall
     r > floor tankR
     u > floor tankU
     l > floor tankL
@@ -63,34 +64,37 @@ BasicGame square_size=30
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
 
-    timebonus_tick timebonus > killSprite scoreChange=-50
+    timebonus_tick timebonus > killSprite scoreChange=-5
     timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
     timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
     timebonus_maxticks timebonus_maxticks > killBoth
-    timebonus_start timebonus > killSprite scoreChange=35000
+    timebonus_start timebonus > killSprite scoreChange=3500
 
     pickaxe_penalty floor > transformIfCount stype=pickaxe_penalty2 stypeCount=pro geq=1
-    pickaxe_penalty2 floor > transformTo stype=pickaxe_penalty3 scoreChange=-101
+    pickaxe_penalty2 floor > transformTo stype=pickaxe_penalty3 scoreChange=-1
     pickaxe_penalty3 floor > transformIfCount stype=pickaxe_penalty stypeCount=pro leq=0
-
-    wall pro > killBoth
-   # pro wall > transformTo stype=pickaxe
-    gold avatar > killSprite scoreChange=500
-
-    #tank pro > bounceForward
-    pro tank > killSprite
-
-    pickaxe avatar > collectResource scoreChange=100
-    pickaxe avatar > killSprite
-
-    pro EOS > wrapAround
 
     pro enemy > transformTo stype=pickaxe
     enemy pro > killSprite scoreChange=250
 
+    trap pro > transformTo stype=enemy
+
+    wall pro > killBoth
+    #pro wall > transformTo stype=pickaxe
+    gold avatar > killSprite scoreChange=2
+
+    #tank pro > bounceForward
+    pro tank > killSprite
+
+    pickaxe avatar > collectResource scoreChange=1
+    pickaxe avatar > killSprite
+
+    pro EOS > wrapAround
+
+
     wall tank > killSprite scoreChange=10
 
-    movable wall > stepBack
+    movable wall trap > stepBack
     movable EOS > wrapAround
     goal avatar > killSprite scoreChange=2000
     enemy enemy > stepBack
@@ -107,15 +111,21 @@ BasicGame square_size=30
 
     dead floor > killSprite
 
-    coin avatar > transformIfCount stype=destroy stypeCount=coin leq=0
-    coin avatar > killSprite scoreChange=2
-
     destroy floor > killAll stype=wall
 
   TerminationSet
     SpriteCounter stype=goal   win=True
     #SpriteCounter stype=enemy  win=True
     SpriteCounter stype=avatar win=False
+    Timeout limit=1000 win=False
 
 
+  ParameterSet
+    #{Name of the parameter} > {values(min, inc, max)/(boolean)} {descriptive string}
 
+    #AVSPEED      > values=0.1:0.5:1.0     string=Avatar_Speed value=1
+    BATSPEED     > values=0.1:0.2:0.5     string=Bat_Speed
+    TANKSPEED    > values=0:0.1:0.2       string=Tank_Speed
+    PAXECD       > values=15:5:25         string=Pickaxe_Cooldown
+    LPAXE        > values=1:1:3           string=Pickaxe_Limit
+    #VPAXE       > values=1:1:3           string=Pickaxe_Value
