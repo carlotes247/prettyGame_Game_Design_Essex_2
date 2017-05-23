@@ -46,6 +46,7 @@ public class TransformIfCount extends TransformTo {
         this.applyScore = false;
         this.count = false;
         this.countElse = false;
+        System.out.println(leq);
         if(numSpritesCheck <= leq && numSpritesCheck >= geq)
         {
             VGDLSprite newSprite = game.addSprite(itype, sprite1.getPosition(), true);
