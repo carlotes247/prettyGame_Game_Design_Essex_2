@@ -24,6 +24,7 @@ public class Test {
 		String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
 
 		String interactorController = "tracks.singlePlayer.advanced.interactor.Agent";
+		String braindeadController = "tracks.singlePlayer.advanced.simple.Agent";
 
 		// Available games:
 		String gridGamesPath = "examples/gridphysics/";
@@ -84,6 +85,7 @@ public class Test {
 
 		// 2. This plays a game in a level by the controller.
 //		ArcadeMachine.runOneGame(game, level1, visuals, interactorController, recordActionsFile, seed, 0);
+
 
 
 		// 3. This replays a game from an action file previously recorded
