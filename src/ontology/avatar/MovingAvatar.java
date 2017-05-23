@@ -129,10 +129,13 @@ public class MovingAvatar extends VGDLSprite {
         ect.setMaxTimeMillis(CompetitionParameters.ACTION_TIME);
 
         Types.ACTIONS action;
+        Vector2d position;
         if (game.no_players > 1) {
             action = this.player.act(game.getObservationMulti(playerID), ect.copy());
+            position = game.getObservationMulti(playerID).getAvatarPosition();
         } else {
             action = this.player.act(game.getObservation(), ect.copy());
+            position = game.getObservation().getAvatarPosition();
         }
 
 //        if(CompetitionParameters.TIME_CONSTRAINED && ect.exceededMaxTime())
@@ -155,6 +158,7 @@ public class MovingAvatar extends VGDLSprite {
             action = Types.ACTIONS.ACTION_NIL;
 
         this.player.logAction(action);
+        this.player.logPosition(position);
         game.setAvatarLastAction(action, getPlayerID());
         ki.reset(getPlayerID());
         ki.setAction(action, getPlayerID());

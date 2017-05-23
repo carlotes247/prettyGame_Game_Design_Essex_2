@@ -5,6 +5,7 @@ import core.game.StateObservation;
 import core.game.StateObservationMulti;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
+import tools.Vector2d;
 
 import java.awt.*;
 import java.io.BufferedWriter;
@@ -47,6 +48,7 @@ public abstract class Player {
      * List of actions to be dumped.
      */
     private ArrayList<Types.ACTIONS> allActions;
+    private ArrayList<Vector2d> positions;
 
     /**
      * Random seed of the game.
@@ -111,6 +113,7 @@ public abstract class Player {
         if(this.actionFile!=null && SHOULD_LOG)
         {
             allActions = new ArrayList<>();
+            positions = new ArrayList<>();
         }
     }
 
@@ -128,6 +131,11 @@ public abstract class Player {
                 for(Types.ACTIONS act : allActions)
                     writer.write(act.toString() + "\n");
 
+                writer.write("\n-----Positions-----\n");
+
+                for(Vector2d pos : positions)
+                    writer.write(pos.toString() + "\n");
+
                 writer.close();
             }
         } catch (IOException e) {
@@ -140,11 +148,19 @@ public abstract class Player {
      * @param action the action to log.
      */
     final public void logAction(Types.ACTIONS action) {
-
         lastAction = action;
         if(this.actionFile!=null && SHOULD_LOG)
         {
             allActions.add(action);
+        }
+
+    }
+
+    final public void logPosition(Vector2d value) {
+        System.out.println(value);
+        if(this.actionFile!=null && SHOULD_LOG)
+        {
+            positions.add(value);
         }
 
     }
