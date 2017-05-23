@@ -23,6 +23,7 @@ public class TestGameSpace {
         String repeatOLETS = "tracks.singlePlayer.tools.repeatOLETS.Agent";
 
         String interactorController = "tracks.singlePlayer.advanced.interactor.Agent";
+        String simpleController = "tracks.singlePlayer.advanced.simple.Agent";
 
 
         // Available games:
@@ -75,7 +76,7 @@ public class TestGameSpace {
 //        dm.playGame(individual, game, level1, seed);
 
         //2. Play with a controller.
-        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
+        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 0;
         dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
 
 
