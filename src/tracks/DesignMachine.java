@@ -56,11 +56,17 @@ public class DesignMachine {
         }
     }
 
-    public double[] playGame(int[] parameters, String game_file, String level_file, int randomSeed)
+    public double[] playGame(int[] parameters, String game_file, String level_file, int randomSeed, int player, String trial)
     {
         String agentName = "tracks.singlePlayer.tools.human.Agent";
         boolean visuals = true;
-        return runOneGame(parameters, game_file, level_file, visuals, agentName, null, randomSeed, 0);
+
+        String actionFile = null;
+
+        if (trial != null)
+            actionFile = "log/actions_" + player + "_" + trial + ".txt";
+
+        return runOneGame(parameters, game_file, level_file, visuals, agentName, actionFile, randomSeed, 0);
     }
 
 

@@ -12,19 +12,9 @@ public class TestGameSpace {
 
     public static void main(String[] args) {
         // Available tracks:
-        String sampleRandomController = "tracks.singlePlayer.simple.sampleRandom.Agent";
-        String doNothingController = "tracks.singlePlayer.simple.doNothing.Agent";
-        String sampleOneStepController = "tracks.singlePlayer.simple.sampleonesteplookahead.Agent";
-        String sampleMCTSController = "tracks.singlePlayer.deprecated.sampleMCTS.Agent";
-        String sampleFlatMCTSController = "tracks.singlePlayer.simple.greedyTreeSearch.Agent";
-        String sampleOLMCTSController = "tracks.singlePlayer.advanced.sampleMCTS.Agent";
-        String sampleGAController = "tracks.singlePlayer.deprecated.sampleGA.Agent";
-        String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
-        String repeatOLETS = "tracks.singlePlayer.tools.repeatOLETS.Agent";
 
         String interactorController = "tracks.singlePlayer.advanced.interactor.Agent";
         String simpleController = "tracks.singlePlayer.advanced.simple.Agent";
-
 
         // Available games:
         String gamesPath = "examples/gameDesign/";
@@ -40,11 +30,6 @@ public class TestGameSpace {
 
         // Game and level to play
         int gameIdx = 0;
-        int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
-        int seed = new Random().nextInt();
-
-        String game = gamesPath + games[gameIdx] + ".txt";
-        String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
 
         String recordActionsFile = null;// "actions_" + games[gameIdx] + "_lvl"
                         // + levelIdx + "_" + seed + ".txt";
@@ -53,9 +38,44 @@ public class TestGameSpace {
 
 
 
+
+
+
+
+        /**
+         * PARTICIPANT UNIQUE ID.
+         */
+        int player = 0;
+
+
+        /**
+         * Set to true if trial A, false if trial B.
+         */
+        boolean saveActions = false;
+        boolean trialA = true;
+        boolean trialB = !(trialA);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /** Game Spaces stuff starts here **/
 
         //Reads VGDL and loads game with parameters.
+        String game = gamesPath + games[gameIdx] + ".txt";
         DesignMachine dm = new DesignMachine(game);
 
         //0: Assigns values to parameters to play the game. Two ways: random and explicit.
@@ -73,7 +93,25 @@ public class TestGameSpace {
 
 
         //1. Play as a human.
-        dm.playGame(individual, game, level1, seed);
+        String trial = null;
+        int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
+        int seed = new Random().nextInt();
+
+        if (saveActions) {
+            if (trialA) {
+                individual = new int[]{0,1,0,1,0,1,0,0};
+                trial = "A";
+            } else if (trialB) {
+                individual = new int[]{0,1,0,1,0,1,2,2};
+                trial = "B";
+            } else {
+                levelIdx = 1;
+            }
+        }
+
+        String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
+
+        dm.playGame(individual, game, level1, seed, player, trial);
 
         //2. Play with a controller.
 //        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;

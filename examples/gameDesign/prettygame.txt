@@ -1,4 +1,4 @@
-GameSpace square_size=30
+GameSpace square_size=50
   SpriteSet
     floor > Immovable img=world_NES_sliced/58 hidden=True
     floor2 > Immovable img=world_NES_sliced/2  hidden=True
@@ -23,15 +23,15 @@ GameSpace square_size=30
     #Termination state
     dead > Immovable invisible=True hidden=True
 
-    timebonus > SpawnPoint stype=timebonus_tick invisible=true
-    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=SC_TIME_L invisible=true
-    timebonus_tick > Immovable invisible=true
-    timebonus_maxticks > Immovable invisible=true
-    timebonus_start > Immovable invisible=true
+    timebonus > SpawnPoint stype=timebonus_tick invisible=true hidden=True
+    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=SC_TIME_L invisible=true hidden=True
+    timebonus_tick > Immovable invisible=true hidden=True
+    timebonus_maxticks > Immovable invisible=true hidden=True
+    timebonus_start > Immovable invisible=true hidden=True
 
-    pickaxe_penalty > Immovable invisible=true
-    pickaxe_penalty2 > Immovable invisible=true
-    pickaxe_penalty3 > Immovable invisible=true
+    pickaxe_penalty > Immovable invisible=true hidden=True
+    pickaxe_penalty2 > Immovable invisible=true hidden=True
+    pickaxe_penalty3 > Immovable invisible=true hidden=True
 
     paspawn > SpawnPoint stype=pam prob=0.1 cooldown=PAXECD invisible=True hidden=True
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True hidden=True
