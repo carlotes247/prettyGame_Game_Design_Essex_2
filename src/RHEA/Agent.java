@@ -107,20 +107,19 @@ public class Agent {
         double[][] scores = new double[no_heuristics][];
         int[] seed = new int[params.RESAMPLE];
 
-        int bonus = 1000;
+        int bonus = 100;
 
         for (int i = 0; i < no_heuristics; i++) {
             tracks.singlePlayer.advanced.interactor.Agent.heuristic = i;
             double totWin = 0;
             double totSc = 0;
             for (int j = 0; j < params.RESAMPLE; j++) {
-                if (i == 0)
+                if (i == 0) //set seed, keep for all algorithms
                     seed[j] = new Random().nextInt();
                 scores[i] = dm.runOneGame(individual.actions, game, level1, false, controller, null, seed[j], 0);
                 totWin += scores[i][0];
                 totSc += scores[i][1];
             }
-
 
             totWin /= params.RESAMPLE;
             totSc /= params.RESAMPLE;
