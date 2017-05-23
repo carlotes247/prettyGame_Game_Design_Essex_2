@@ -1,4 +1,4 @@
-GameSpace square_size=30
+prettygame.txtprettygame.txtGameSpace square_size=30
   SpriteSet
     floor > Immovable img=world_NES_sliced/58 hidden=True
     floor2 > Immovable img=world_NES_sliced/2  hidden=True
@@ -65,7 +65,7 @@ GameSpace square_size=30
     timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2 enabled=TBONUS
     timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2 enabled=TBONUS
     timebonus_maxticks timebonus_maxticks > killBoth enabled=TBONUS
-    timebonus_start timebonus > killSprite scoreChange=1000 enabled=TBONUS
+    timebonus_start timebonus > killSprite scoreChange=800 enabled=TBONUS
 
     pickaxe_penalty floor > transformIfCount stype=pickaxe_penalty2 stypeCount=pro geq=1
     pickaxe_penalty2 floor > transformTo stype=pickaxe_penalty3 scoreChange=-2
@@ -121,9 +121,9 @@ GameSpace square_size=30
     PAXECD       > values=10:5:25         string=Pickaxe_Cooldown
     LPAXE        > values=1:1:3           string=Pickaxe_Limit
     VPAXE        > values=1:1:3           string=Pickaxe_Value
-    TBONUS       > values=True:False      string=Time_Bonus
-    SC_TIME      > values=-2:-2:-8        string=Time_Value      value=-2
-    SC_TIME_L    > values=200:100:500     string=Time_Bonus_Max  value=500
+    TBONUS       > values=True:False      string=Time_Bonus      value=true
+    SC_TIME      > values=-2:-2:-8        string=Time_Value      value=-4
+    SC_TIME_L    > values=200:100:500     string=Time_Bonus_Max  value=400
     SC_GOLD      > values=0:5:15          string=Score_Gold
     SC_PAXE      > values=0:5:15          string=Score_Pickaxe
     SC_WALL      > values=0:5:15          string=Score_Wall_Kill

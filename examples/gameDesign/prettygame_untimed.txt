@@ -121,8 +121,8 @@ GameSpace square_size=30
     PAXECD       > values=10:5:25         string=Pickaxe_Cooldown
     LPAXE        > values=1:1:3           string=Pickaxe_Limit
     VPAXE        > values=1:1:3           string=Pickaxe_Value
-    TBONUS       > values=True:False      string=Time_Bonus
-    SC_TIME      > values=-2:-2:-8        string=Time_Value      value=-2
+    TBONUS       > values=True:False      string=Time_Bonus      value=true
+    SC_TIME      > values=-2:-2:-8        string=Time_Value      value=-6
     SC_TIME_L    > values=200:100:500     string=Time_Bonus_Max  value=500
     SC_GOLD      > values=0:5:15          string=Score_Gold
     SC_PAXE      > values=0:5:15          string=Score_Pickaxe
