@@ -30,11 +30,11 @@ public class Agent extends AbstractPlayer {
     static ExplorerHeuristic hExplorer;
     static HeuristicStubborn hStubborn;
     public static int heuristic;
-    public int no_heuristics = 4;
-    static final int HEURISTIC_DEFAULT = 0;
-    static final int HEURISTIC_INTERACT = 1;
-    static final int HEURISTIC_EXPLORER = 2;
-    static final int HEURISTIC_STUBBORN = 3;
+    public static final int no_heuristics = 4;
+    public static final int HEURISTIC_DEFAULT = 0;
+    public static final int HEURISTIC_INTERACT = 1;
+    public static final int HEURISTIC_EXPLORER = 2;
+    public static final int HEURISTIC_STUBBORN = 3;
     static Bandit ucb;
 
     /**
@@ -62,7 +62,7 @@ public class Agent extends AbstractPlayer {
         hStubborn = new HeuristicStubborn(getPlayerID());
 //        ucb = new Bandit(no_heuristics);
 
-        heuristic = HEURISTIC_DEFAULT;
+//        heuristic = HEURISTIC_DEFAULT;
 //        heuristic = HEURISTIC_INTERACT;
 //        heuristic = HEURISTIC_EXPLORER;
 //        heuristic = HEURISTIC_STUBBORN;

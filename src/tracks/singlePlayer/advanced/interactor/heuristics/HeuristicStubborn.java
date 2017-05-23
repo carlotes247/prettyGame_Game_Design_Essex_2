@@ -2,6 +2,7 @@ package tracks.singlePlayer.advanced.interactor.heuristics;
 
 import core.game.StateObservation;
 import ontology.Types;
+import tools.Utils;
 import tracks.multiPlayer.advanced.prettycontroller.heuristics.StateHeuristicMulti;
 
 public class HeuristicStubborn extends StateHeuristic
@@ -10,6 +11,8 @@ public class HeuristicStubborn extends StateHeuristic
     public int playerID;
     Types.ACTIONS lastAction;
     int multiplier;
+    double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
+
 
     public HeuristicStubborn(int pid)
     {
@@ -27,7 +30,15 @@ public class HeuristicStubborn extends StateHeuristic
     public double evaluateState(StateObservation stateObs)
     {
 //        System.out.println("Value: " + intrinsicScore);
-        return intrinsicScore;
+
+        double normDelta = Utils.normalise(intrinsicScore, bounds[0], bounds[1]);
+
+        if(intrinsicScore < bounds[0])
+            bounds[0] = intrinsicScore;
+        if(intrinsicScore > bounds[1])
+            bounds[1] = intrinsicScore;
+
+        return normDelta;
     }
 
     public void update(StateObservation stateObs, Types.ACTIONS action, float depth)
