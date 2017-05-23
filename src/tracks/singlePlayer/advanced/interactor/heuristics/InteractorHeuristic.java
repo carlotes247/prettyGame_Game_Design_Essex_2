@@ -23,6 +23,8 @@ public class InteractorHeuristic extends StateHeuristic {
     private ArrayList<Integer> objects;
     private ArrayList<Integer> newObjects;
 
+    double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
+
     public InteractorHeuristic(StateObservation stateObs) {
         objects = new ArrayList<>();
         newObjects = new ArrayList<>();
@@ -50,12 +52,17 @@ public class InteractorHeuristic extends StateHeuristic {
         // If no new sprites have been interacted with, subtract distance to closest new sprite
         // to nudge agent to move towards sprites it has not interacted with yet
         if (newObjects.size() == objects.size()) {
-            rawScore += findNewEvent(stateObs)/100;
+            rawScore += findNewEvent(stateObs);
         }
 
-//        System.out.println(newObjects);
+        double normDelta = Utils.normalise(rawScore, bounds[0], bounds[1]);
 
-        return rawScore;
+        if(rawScore < bounds[0])
+            bounds[0] = rawScore;
+        if(rawScore > bounds[1])
+            bounds[1] = rawScore;
+
+        return normDelta;
     }
 
     private void updateEvents(StateObservation stateObs, ArrayList<Integer> objects) {

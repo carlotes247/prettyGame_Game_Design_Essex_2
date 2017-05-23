@@ -198,34 +198,36 @@ public class SingleTreeNode
 
     public double value(StateObservation a_gameState) {
 
+        double intrinsicValue = 0;
         double value = 0;
 
         if (heuristic == HEURISTIC_INTERACT)
-            value = hInteract.evaluateState(a_gameState);
-//            value=0;
+            intrinsicValue = hInteract.evaluateState(a_gameState);
         else if(heuristic == HEURISTIC_EXPLORER)
-            value = hExplorer.evaluateState(a_gameState);
+            intrinsicValue = hExplorer.evaluateState(a_gameState);
         else if(heuristic == HEURISTIC_STUBBORN)
-            value = hStubborn.evaluateState(a_gameState);
+            intrinsicValue = hStubborn.evaluateState(a_gameState);
 
         boolean gameOver = a_gameState.isGameOver();
         Types.WINNER win = a_gameState.getGameWinner();
-        value += a_gameState.getGameScore();
+        double extrinsicValue = a_gameState.getGameScore();
 
-        double normDelta = Utils.normalise(value, bounds[0], bounds[1]);
+        double normDelta = Utils.normalise(extrinsicValue, bounds[0], bounds[1]);
 
-        if(value < bounds[0])
-            bounds[0] = value;
-        if(value > bounds[1])
-            bounds[1] = value;
+        if(extrinsicValue < bounds[0])
+            bounds[0] = extrinsicValue;
+        if(extrinsicValue > bounds[1])
+            bounds[1] = extrinsicValue;
+
+        value = (normDelta + intrinsicValue) / 2;
 
         if(gameOver && (win == Types.WINNER.PLAYER_LOSES))
-            normDelta += HUGE_NEGATIVE;
+            value += HUGE_NEGATIVE;
 
         if(gameOver && (win == Types.WINNER.PLAYER_WINS))
-            normDelta += HUGE_POSITIVE;
+            value += HUGE_POSITIVE;
 
-        return normDelta;
+        return value;
     }
 
     public boolean finishRollout(StateObservation rollerState, int depth)

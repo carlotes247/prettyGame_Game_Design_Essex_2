@@ -1,6 +1,7 @@
 package tracks.singlePlayer.advanced.interactor.heuristics;
 
 import core.game.StateObservation;
+import tools.Utils;
 import tools.Vector2d;
 import tracks.multiPlayer.advanced.prettycontroller.heuristics.StateHeuristicMulti;
 
@@ -13,10 +14,6 @@ import java.util.ArrayList;
  */
 public class ExplorerHeuristic extends StateHeuristic {
 
-    // Penalty and reward
-    private static final double HUGE_NEGATIVE = -1000.0;
-    private static final double HUGE_POSITIVE =  1000.0;
-
     // The actual positions that you played in the game
     private ArrayList<Vector2d> positions;
     // Positions of one particular iteration of MCTS
@@ -25,15 +22,11 @@ public class ExplorerHeuristic extends StateHeuristic {
     private float futurePenalty;
     // The coefficient of the penalty to add
     private float coeficientPenalty;
-    // Players 0 or 1
-    private int playerID;
-    private int playerType;
-
-    // Last tick for which you have all the previous events recorded
-    private int lastGameTick;
 
     // If the last strategy was explore
     boolean lastStrategyExplore;
+
+    double[] bounds = new double[]{Double.MAX_VALUE, -Double.MAX_VALUE};
 
     /**
      * Constructor of the class, default values
@@ -46,11 +39,8 @@ public class ExplorerHeuristic extends StateHeuristic {
         positions = new ArrayList<>();
         futurePositions = new ArrayList<>();
         futurePositions.addAll(positions);
-        this.playerID = playerID;
-        lastGameTick = 0;
         if (stateObs != null) {
             updatePositions(stateObs, positions);
-            playerType = stateObs.getAvatarType();
         }
     }
 
@@ -69,11 +59,6 @@ public class ExplorerHeuristic extends StateHeuristic {
         futurePenalty = 0f;
         coeficientPenalty = 50f;
         //futurePositions.addAll(positions);
-    }
-
-    // Setter for last game tick
-    public void setLastGameTick(int tick) {
-        lastGameTick = tick;
     }
 
     /**
@@ -112,7 +97,14 @@ public class ExplorerHeuristic extends StateHeuristic {
             }
         }
 
-        return rewardScore;
+        double normDelta = Utils.normalise(rewardScore, bounds[0], bounds[1]);
+
+        if(rewardScore < bounds[0])
+            bounds[0] = rewardScore;
+        if(rewardScore > bounds[1])
+            bounds[1] = rewardScore;
+
+        return normDelta;
     }
 
     /**
