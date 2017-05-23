@@ -212,14 +212,15 @@ public class SingleTreeNode
         Types.WINNER win = a_gameState.getGameWinner();
         double extrinsicValue = a_gameState.getGameScore();
 
-        double normDelta = Utils.normalise(extrinsicValue, bounds[0], bounds[1]);
+        double normExtrinsic = Utils.normalise(extrinsicValue, bounds[0], bounds[1]);
 
         if(extrinsicValue < bounds[0])
             bounds[0] = extrinsicValue;
         if(extrinsicValue > bounds[1])
             bounds[1] = extrinsicValue;
 
-        value = (normDelta + intrinsicValue) / 2;
+        double weight = 0.8;
+        value = weight * normExtrinsic + intrinsicValue * (1 - weight);
 
         if(gameOver && (win == Types.WINNER.PLAYER_LOSES))
             value += HUGE_NEGATIVE;

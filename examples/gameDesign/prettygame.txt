@@ -23,11 +23,11 @@ GameSpace square_size=30
     #Termination state
     dead > Immovable invisible=True hidden=True
 
-    timebonus > SpawnPoint stype=timebonus_tick invisible=true
-    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=700 invisible=true
-    timebonus_tick > Immovable invisible=true
-    timebonus_maxticks > Immovable invisible=true
-    timebonus_start > Immovable invisible=true
+    #timebonus > SpawnPoint stype=timebonus_tick invisible=true
+    #timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=700 invisible=true
+    #timebonus_tick > Immovable invisible=true
+    #timebonus_maxticks > Immovable invisible=true
+    #timebonus_start > Immovable invisible=true
 
     pickaxe_penalty > Immovable invisible=true
     pickaxe_penalty2 > Immovable invisible=true
@@ -37,8 +37,6 @@ GameSpace square_size=30
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True hidden=True
     pickaxe > Resource value=1 limit=LPAXE img=oryx/pickaxe
 
-    destroy > Immovable hidden=True invisible=True
-
     wall > Immovable img=world_NES_sliced/wall1
     trap > Immovable img=world_NES_sliced/wall1 hidden=True invisible=True
     pro > Missile speed=1 img=oryx/pickaxe singleton=True
@@ -47,7 +45,7 @@ GameSpace square_size=30
 
   LevelMapping
     g > floor goal
-    A > floor avatar pcq pickaxe_penalty  timebonus timebonus_limit timebonus_start
+    A > floor avatar pcq pickaxe_penalty  #timebonus timebonus_limit timebonus_start
     e > floor enemy
     . > floor
     * > floor2
@@ -64,18 +62,18 @@ GameSpace square_size=30
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
 
-    timebonus_tick timebonus > killSprite scoreChange=-5
-    timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
-    timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
-    timebonus_maxticks timebonus_maxticks > killBoth
-    timebonus_start timebonus > killSprite scoreChange=3500
+    #timebonus_tick timebonus > killSprite scoreChange=-5
+    #timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
+    #timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
+    #timebonus_maxticks timebonus_maxticks > killBoth
+    #timebonus_start timebonus > killSprite scoreChange=3500
 
     pickaxe_penalty floor > transformIfCount stype=pickaxe_penalty2 stypeCount=pro geq=1
     pickaxe_penalty2 floor > transformTo stype=pickaxe_penalty3 scoreChange=-1
     pickaxe_penalty3 floor > transformIfCount stype=pickaxe_penalty stypeCount=pro leq=0
 
     pro enemy > transformTo stype=pickaxe
-    enemy pro > killSprite scoreChange=250
+    enemy pro > killSprite scoreChange=10
 
     trap pro > transformTo stype=enemy
 
@@ -92,11 +90,11 @@ GameSpace square_size=30
     pro EOS > wrapAround
 
 
-    wall tank > killSprite scoreChange=10
+    wall tank > killSprite scoreChange=3
 
     movable wall trap > stepBack
     movable EOS > wrapAround
-    goal avatar > killSprite scoreChange=2000
+    goal avatar > killSprite
     enemy enemy > stepBack
     avatar enemy tank > killSprite scoreChange=-15
 
@@ -110,8 +108,6 @@ GameSpace square_size=30
     pc floor > transformIfCount stype=dead stypeCount=pro leq=0
 
     dead floor > killSprite
-
-    destroy floor > killAll stype=wall
 
   TerminationSet
     SpriteCounter stype=goal   win=True
