@@ -5,7 +5,7 @@ BasicGame square_size=30
     goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar  > ShootAvatar ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
+      avatar  > ShootAvatar rotateInPlace=false ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
       enemy > Chaser stype=avatar img=oryx/bat1 speed=0.1
       tank > Missile speed=0.05
         tankR > img=newset/tank_blueR orientation=RIGHT
@@ -27,6 +27,12 @@ BasicGame square_size=30
     pickaxe_penalty2 > Immovable invisible=true
     pickaxe_penalty3 > Immovable invisible=true
 
+    timebonus > SpawnPoint stype=timebonus_tick invisible=true
+    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=700 invisible=true
+    timebonus_tick > Immovable invisible=true
+    timebonus_maxticks > Immovable invisible=true
+    timebonus_start > Immovable invisible=true
+
     paspawn > SpawnPoint stype=pam prob=0.1 cooldown=20 invisible=True
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True
     pickaxe > Resource value=1 limit=1 img=oryx/pickaxe
@@ -38,7 +44,7 @@ BasicGame square_size=30
 
   LevelMapping
     g > floor goal
-    A > floor avatar pcq pickaxe_penalty
+    A > floor avatar pcq pickaxe_penalty timebonus timebonus_limit timebonus_start
     e > floor enemy
     . > floor
     * > floor2
@@ -53,6 +59,12 @@ BasicGame square_size=30
   InteractionSet
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
+
+    timebonus_tick timebonus > killSprite scoreChange=-50
+    timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
+    timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
+    timebonus_maxticks timebonus_maxticks > killBoth
+    timebonus_start timebonus > killSprite scoreChange=35000
 
     pickaxe_penalty floor > transformIfCount stype=pickaxe_penalty2 stypeCount=pro geq=1
     pickaxe_penalty2 floor > transformTo stype=pickaxe_penalty3 scoreChange=-101
