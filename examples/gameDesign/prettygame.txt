@@ -24,7 +24,7 @@ GameSpace square_size=30
     dead > Immovable invisible=True hidden=True
 
     timebonus > SpawnPoint stype=timebonus_tick invisible=true
-    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=SC_TIME_L invisible=true
+    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=700 invisible=true
     timebonus_tick > Immovable invisible=true
     timebonus_maxticks > Immovable invisible=true
     timebonus_start > Immovable invisible=true
@@ -61,11 +61,11 @@ GameSpace square_size=30
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
 
-    timebonus_tick timebonus > killSprite scoreChange=SC_TIME enabled=TBONUS
-    timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2 enabled=TBONUS
-    timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2 enabled=TBONUS
-    timebonus_maxticks timebonus_maxticks > killBoth enabled=TBONUS
-    timebonus_start timebonus > killSprite scoreChange=1000 enabled=TBONUS
+    timebonus_tick timebonus > killSprite scoreChange=-1 enabled=TBONUS
+    timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
+    timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2
+    timebonus_maxticks timebonus_maxticks > killBoth
+    timebonus_start timebonus > killSprite scoreChange=1000
 
     pickaxe_penalty floor > transformIfCount stype=pickaxe_penalty2 stypeCount=pro geq=1
     pickaxe_penalty2 floor > transformTo stype=pickaxe_penalty3 scoreChange=-2
@@ -122,8 +122,6 @@ GameSpace square_size=30
     LPAXE        > values=1:1:3           string=Pickaxe_Limit
     VPAXE        > values=1:1:3           string=Pickaxe_Value
     TBONUS       > values=True:False      string=Time_Bonus
-    SC_TIME      > values=-2:-2:-8        string=Time_Value      value=-2
-    SC_TIME_L    > values=200:100:500     string=Time_Bonus_Max  value=500
     SC_GOLD      > values=0:5:15          string=Score_Gold
     SC_PAXE      > values=0:5:15          string=Score_Pickaxe
     SC_WALL      > values=0:5:15          string=Score_Wall_Kill
