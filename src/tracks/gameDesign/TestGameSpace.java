@@ -4,6 +4,9 @@ import tracks.DesignMachine;
 
 import java.util.Random;
 
+import static tracks.singlePlayer.advanced.interactor.Agent.heuristic;
+import static tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
+
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 04/10/13 Time: 16:29 This is a
  * Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
@@ -76,6 +79,27 @@ public class TestGameSpace {
         dm.playGame(individual, game, level1, seed);
 
         //2. Play with a controller.
+
+        /**
+         * Final best -- 306.0899293701695: 4,1,2,0,0,3,2,0
+         * Alltime best -- 1949.8085097263095: 0,0,3,0,0,3,1,3
+         *
+         * Final/Alltime worst -- -1407.625: 2,3,2,2,1,3,1,0
+         */
+
+        individual = new int[]{2,2,0,3,1,4,0,0};
+        System.out.println("Final best: ");
+        evaluate(individual,dm,game,level1,interactorController,simpleController);
+
+        individual = new int[]{0,1,3,3,3,0,0,0};
+        System.out.println("Alltime best: ");
+        evaluate(individual,dm,game,level1,interactorController,simpleController);
+
+        individual = new int[]{1,2,0,3,3,2,2,1};
+        System.out.println("Worst: ");
+        evaluate(individual,dm,game,level1,interactorController,simpleController);
+
+
 //        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
 //        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
 
@@ -118,31 +142,39 @@ public class TestGameSpace {
     }
 
 
-    private static double evaluate(int[] individual, DesignMachine dm, String game, String level1, String controller) {
+    private static double evaluate(int[] individual, DesignMachine dm, String game, String level1, String controller, String simpleController) {
         double value = 0;
 
-        int seed = new Random().nextInt();
-
-        int no_heuristics = tracks.singlePlayer.advanced.interactor.Agent.no_heuristics;
-        double[][] scores = new double[no_heuristics][];
+        int resampling = 20;
+        int no_agents = no_heuristics + 1;
+        double[][] scores = new double[no_agents][];
+        int[] seed = new int[resampling];
 
         int bonus = 1000;
 
-        for (int i = 0; i < no_heuristics; i++) {
-            tracks.singlePlayer.advanced.interactor.Agent.heuristic = i;
+        for (int i = 0; i < no_agents; i++) {
+            String playController;
+            if (i == 0)
+                playController = simpleController;
+            else {
+                playController = controller;
+                heuristic = i;
+            }
             double totWin = 0;
             double totSc = 0;
-            for (int j = 0; j < 3; j++) {
-                scores[i] = dm.runOneGame(individual, game, level1, false, controller, null, seed, 0);
+            for (int j = 0; j < resampling; j++) {
+                if (i == 0) //set seed, keep for all algorithms
+                    seed[j] = new Random().nextInt();
+                scores[i] = dm.runOneGame(individual, game, level1, false, playController, null, seed[j], 0);
                 totWin += scores[i][0];
                 totSc += scores[i][1];
             }
 
-            totWin /= 2;
-            totSc /= 3;
+            totWin /= resampling;
+            totSc /= resampling;
 
-            if ( i == 0 )
-                value = -totWin*bonus*no_heuristics - totSc*no_heuristics;
+            if ( i <= 1 )
+                value = -totWin*bonus*no_agents/2 - totSc*no_agents/2;
             else
                 value += totWin*bonus + totSc;
         }
