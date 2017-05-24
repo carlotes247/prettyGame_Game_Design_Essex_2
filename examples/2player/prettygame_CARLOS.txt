@@ -1,4 +1,4 @@
-BasicGame no_players=2
+BasicGame no_players=2 musicSrc=assets/taltalsong.ogg
   SpriteSet
     floor > Immovable img=world_NES_sliced/58 hidden=True
     floor2 > Immovable img=world_NES_sliced/2  hidden=True
