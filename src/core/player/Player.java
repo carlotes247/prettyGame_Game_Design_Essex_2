@@ -157,7 +157,7 @@ public abstract class Player {
     }
 
     final public void logPosition(Vector2d value) {
-        System.out.println(value);
+//        System.out.println(value);
         if(this.actionFile!=null && SHOULD_LOG)
         {
             positions.add(value);

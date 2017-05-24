@@ -97,17 +97,33 @@ public class TestGameSpace {
         int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
         int seed = new Random().nextInt();
 
+        /**
+         * Final best -- 306.0899293701695: 4,1,2,0,0,3,2,0
+         * Alltime best -- 1949.8085097263095: 0,0,3,0,0,3,1,3
+         *
+         * Final/Alltime worst -- -1407.625: 2,3,2,2,1,3,1,0
+         */
+
+
+        if (trialA) {
+            individual = new int[]{4,1,2,0,0,3,2,0};
+            trial = "A";
+        } else {
+            individual = new int[]{2,3,2,2,1,3,1,0};
+            trial = "B";
+        }
+
         if (saveActions) {
             if (trialA) {
-                individual = new int[]{0,1,0,1,0,1,0,0};
-                trial = "A";
-            } else if (trialB) {
-                individual = new int[]{0,1,0,1,0,1,2,2};
-                trial = "B";
-            } else {
-                levelIdx = 1;
+            trial = "A";
+        } else if (trialB) {
+            trial = "B";
             }
+        } else {
+//            levelIdx = 1;
         }
+        dm.printValues(individual);
+
 
         String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
 

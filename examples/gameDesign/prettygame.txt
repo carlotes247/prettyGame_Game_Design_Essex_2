@@ -24,7 +24,7 @@ GameSpace square_size=50
     dead > Immovable invisible=True hidden=True
 
     timebonus > SpawnPoint stype=timebonus_tick invisible=true hidden=True
-    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=SC_TIME_L invisible=true hidden=True
+    timebonus_limit > SpawnPoint stype=timebonus_maxticks cooldown=700 invisible=true hidden=True
     timebonus_tick > Immovable invisible=true hidden=True
     timebonus_maxticks > Immovable invisible=true hidden=True
     timebonus_start > Immovable invisible=true hidden=True
@@ -38,7 +38,6 @@ GameSpace square_size=50
     pickaxe > Resource value=1 limit=LPAXE img=oryx/pickaxe
 
     wall > Immovable img=world_NES_sliced/wall1
-    trap > Immovable img=world_NES_sliced/wall1 hidden=True invisible=True
     pro > Missile speed=1 img=oryx/pickaxe singleton=True
 
     gold > Passive img=oryx/gold3
@@ -49,7 +48,6 @@ GameSpace square_size=50
     . > floor
     * > floor2
     w > floor wall
-    t > floor trap wall
     r > floor tankR
     u > floor tankU
     l > floor tankL
@@ -61,7 +59,7 @@ GameSpace square_size=50
     #if a pickaxe would respawn on a tile that already has one, prevent it
     pam pickaxe > killSprite
 
-    timebonus_tick timebonus > killSprite scoreChange=SC_TIME enabled=TBONUS
+    timebonus_tick timebonus > killSprite scoreChange=-1 enabled=TBONUS
     timebonus floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2 enabled=TBONUS
     timebonus_limit floor > transformIfCount stype=dead stypeCount=timebonus_maxticks geq=2 enabled=TBONUS
     timebonus_maxticks timebonus_maxticks > killBoth enabled=TBONUS
@@ -73,8 +71,6 @@ GameSpace square_size=50
 
     #pro enemy > transformTo stype=pickaxe
     #enemy pro > killSprite scoreChange=10
-
-    trap pro > transformTo stype=enemy
 
     wall pro > killBoth scoreChange=SC_WALL
     #pro wall > transformTo stype=pickaxe
@@ -90,7 +86,7 @@ GameSpace square_size=50
 
     wall tank > killSprite
 
-    movable wall trap > stepBack
+    movable wall > stepBack
     movable EOS > wrapAround
     goal avatar > killSprite
     #enemy enemy > stepBack
@@ -117,13 +113,11 @@ GameSpace square_size=50
   ParameterSet
     #{Name of the parameter} > {values(min, inc, max)/(boolean)} {descriptive string}
 
-    TANKSPEED    > values=0:0.1:1         string=Tank_Speed
+    TANKSPEED    > values=0:0.2:1         string=Tank_Speed
     PAXECD       > values=10:5:25         string=Pickaxe_Cooldown
     LPAXE        > values=1:1:3           string=Pickaxe_Limit
     VPAXE        > values=1:1:3           string=Pickaxe_Value
     TBONUS       > values=True:False      string=Time_Bonus
-    SC_TIME      > values=-2:-2:-8        string=Time_Value      value=-2
-    SC_TIME_L    > values=200:100:500     string=Time_Bonus_Max  value=500
     SC_GOLD      > values=0:5:15          string=Score_Gold
     SC_PAXE      > values=0:5:15          string=Score_Pickaxe
     SC_WALL      > values=0:5:15          string=Score_Wall_Kill
