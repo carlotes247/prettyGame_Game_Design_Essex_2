@@ -35,11 +35,12 @@ GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
 
     paspawn > SpawnPoint stype=pam prob=0.1 cooldown=PAXECD invisible=True hidden=True
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True hidden=True
-    pickaxe > Resource value=1 limit=LPAXE img=oryx/pickaxe
+    pickaxe > Resource value=1 limit=LPAXE img=world_NES_sliced/pickaxe_NES
 
     wall > Immovable img=world_NES_sliced/wall1
+    debris > Immovable img=world_NES_sliced/debris_rock hidden=True
     trap > Immovable img=world_NES_sliced/wall1 hidden=True invisible=True
-    pro > Missile speed=1 img=oryx/pickaxe singleton=True
+    pro > Missile speed=1 img=world_NES_sliced/pickaxe_NES singleton=True
 
     gold > Passive img=coins/rupee_magenta.png shrinkfactor=0.8
 
@@ -81,7 +82,7 @@ GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
     gold avatar > killSprite scoreChange=SC_GOLD  soundSrc=assets/pickCoin.wav
 
     #tank pro > bounceForward
-    pro tank > killSprite
+    pro tank > killSprite soundSrc=assets/exploFail.wav
 
     pickaxe avatar > collectResource scoreChange=SC_PAXE soundSrc=assets/pickAxe02.wav
     pickaxe avatar > killSprite
@@ -92,7 +93,7 @@ GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
 
     movable wall trap > stepBack
     movable EOS > wrapAround
-    goal avatar > killSprite
+    goal avatar > killSprite soundSrc=assets/win.ogg
     #enemy enemy > stepBack
     avatar tank > killSprite scoreChange=-100 soundSrc=assets/lose.wav
 
