@@ -28,7 +28,7 @@ public class ParameterSet {
     public int REPEAT_ROLLOUT = 1; //try 1,2,5
 
     // set
-    public boolean REEVALUATE = false;
+    public boolean REEVALUATE = true;
     public int MUTATION = 1;
     public int TOURNAMENT_SIZE = 2;
     public int RESAMPLE = 2;

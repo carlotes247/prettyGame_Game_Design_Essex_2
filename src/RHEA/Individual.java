@@ -33,6 +33,7 @@ public class Individual implements Comparable{
         }
         this.n = n;
         this.gen = gen;
+        value = -1;
 //        lastState = null;
     }
 

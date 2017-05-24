@@ -75,6 +75,10 @@ public class Agent {
                 Individual newind = population[0].mutate(params.MUTATION, params.BANDIT_MUTATION, bandits, false); //only 1 individual in population, mutate it
                 evaluate(newind);
 
+                if (params.REEVALUATE) {
+                    evaluate(population[0]);
+                }
+
                 if (population[0].value < newind.value) {
                     if (population[0].value < worst.value)
                         worst = population[0].copy();
@@ -137,6 +141,9 @@ public class Agent {
             else
                 value += totWin*bonus + totSc;
         }
+
+        if (individual.value != -1 )
+            value = (value + individual.value)/2;
 
         individual.value = value;
 
