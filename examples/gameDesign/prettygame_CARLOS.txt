@@ -5,13 +5,13 @@ GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
     goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar  > ShootAvatar  rotateInPlace=false ammo=pickaxe speed=0.8 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
+      avatar  > ShootAvatar  rotateInPlace=false ammo=pickaxe speed=0.5 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
       #enemy > Chaser stype=avatar img=oryx/bat1 speed=BATSPEED
       tank > Missile speed=TANKSPEED img=tanks_NES/tank_green frameRate=3
         tankR > img=tanks_NES/tank_greenR orientation=RIGHT
         tankU > img=tanks_NES/tank_green orientation=UP
         tankL > img=tanks_NES/tank_greenL orientation=LEFT
-        tankD > img=tanks_NES/tank_greenD orientation=DOWN 
+        tankD > img=tanks_NES/tank_greenD orientation=DOWN
 
     #Tick counter
     #Quiescent tick counter
@@ -41,7 +41,7 @@ GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
     trap > Immovable img=world_NES_sliced/wall1 hidden=True invisible=True
     pro > Missile speed=1 img=oryx/pickaxe singleton=True
 
-    gold > Passive img=oryx/gold3
+    gold > Passive img=coins/rupee_magenta.png shrinkfactor=0.8
 
   LevelMapping
     g > floor goal
