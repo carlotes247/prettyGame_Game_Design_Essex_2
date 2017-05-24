@@ -45,7 +45,7 @@ public class TestGameSpace {
         /**
          * PARTICIPANT UNIQUE ID.
          */
-        int player = 0;
+        long player = 0;
 
 
         /**
@@ -53,7 +53,7 @@ public class TestGameSpace {
          */
         boolean saveActions = false;
         boolean trialA = true;
-        boolean trialB = !(trialA);
+//        boolean trialB = !(trialA);
 
 
 
@@ -106,19 +106,19 @@ public class TestGameSpace {
 
 
         if (trialA) {
-            individual = new int[]{4,1,2,0,0,3,2,0};
+            individual = new int[]{2,2,0,3,1,4,0,0};
         } else {
-            individual = new int[]{2,3,2,2,1,3,1,0};
+            individual = new int[]{1,2,0,3,3,2,2,1};
         }
 
         if (saveActions) {
             if (trialA) {
             trial = "A";
-        } else if (trialB) {
+        } else {
             trial = "B";
             }
         } else {
-//            levelIdx = 1;
+            levelIdx = 1;
         }
 //        dm.printValues(individual);
 

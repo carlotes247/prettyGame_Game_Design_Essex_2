@@ -113,7 +113,7 @@ GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
   ParameterSet
     #{Name of the parameter} > {values(min, inc, max)/(boolean)} {descriptive string}
 
-    TANKSPEED    > values=0:0.2:1         string=Tank_Speed
+    TANKSPEED    > values=0:0.1:1         string=Tank_Speed
     PAXECD       > values=10:5:25         string=Pickaxe_Cooldown
     LPAXE        > values=1:1:3           string=Pickaxe_Limit
     VPAXE        > values=1:1:3           string=Pickaxe_Value

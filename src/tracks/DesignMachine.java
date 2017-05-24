@@ -56,7 +56,7 @@ public class DesignMachine {
         }
     }
 
-    public double[] playGame(int[] parameters, String game_file, String level_file, int randomSeed, int player, String trial)
+    public double[] playGame(int[] parameters, String game_file, String level_file, int randomSeed, long player, String trial)
     {
         String agentName = "tracks.singlePlayer.tools.human.Agent";
         boolean visuals = true;
