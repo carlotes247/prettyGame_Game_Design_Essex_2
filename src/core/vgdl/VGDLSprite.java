@@ -794,7 +794,7 @@ public abstract class VGDLSprite {
         /* End of code added by carlos*/
 
         // We only draw the arrow if the directional sprites are null
-        if (draw_arrow) {
+        if (draw_arrow && orientedImg==null) {
             g.setColor(arrowColor);
             g.drawPolygon(p);
             g.fillPolygon(p);
