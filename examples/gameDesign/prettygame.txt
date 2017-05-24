@@ -1,17 +1,17 @@
-GameSpace square_size=50
+GameSpace square_size=50 musicSrc=assets/taltalsong.ogg
   SpriteSet
     floor > Immovable img=world_NES_sliced/58 hidden=True
     floor2 > Immovable img=world_NES_sliced/2  hidden=True
     goal  > Door color=GREEN img=world_NES_sliced/0
 
     movable >
-      avatar  > ShootAvatar  rotateInPlace=false ammo=pickaxe speed=1 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
+      avatar  > ShootAvatar  rotateInPlace=false ammo=pickaxe speed=0.5 frameRate=1.25 stype=pro orientedImg=Link_NES_sliced/link
       #enemy > Chaser stype=avatar img=oryx/bat1 speed=BATSPEED
-      tank > Missile speed=TANKSPEED
-        tankR > img=newset/tank_blueR orientation=RIGHT
-        tankU > img=newset/tank_blue orientation=UP
-        tankL > img=newset/tank_blueL orientation=LEFT
-        tankD > img=newset/tank_blueD orientation=DOWN
+      tank > Missile speed=TANKSPEED img=tanks_NES/tank_green frameRate=3
+        tankR > img=tanks_NES/tank_greenR orientation=RIGHT
+        tankU > img=tanks_NES/tank_green orientation=UP
+        tankL > img=tanks_NES/tank_greenL orientation=LEFT
+        tankD > img=tanks_NES/tank_greenD orientation=DOWN
 
     #Tick counter
     #Quiescent tick counter
@@ -35,12 +35,12 @@ GameSpace square_size=50
 
     paspawn > SpawnPoint stype=pam prob=0.1 cooldown=PAXECD invisible=True hidden=True
     pam > SpawnPoint stype=pickaxe prob=1 total=1 invisible=True hidden=True
-    pickaxe > Resource value=1 limit=LPAXE img=oryx/pickaxe
+    pickaxe > Resource value=1 limit=LPAXE img=world_NES_sliced/pickaxe_NES
 
     wall > Immovable img=world_NES_sliced/wall1
-    pro > Missile speed=1 img=oryx/pickaxe singleton=True
+    pro > Missile speed=1 img=world_NES_sliced/pickaxe_NES singleton=True
 
-    gold > Passive img=oryx/gold3
+    gold > Passive img=coins/rupee_magenta.png shrinkfactor=0.8
 
   LevelMapping
     g > floor goal
@@ -72,25 +72,25 @@ GameSpace square_size=50
     #pro enemy > transformTo stype=pickaxe
     #enemy pro > killSprite scoreChange=10
 
-    wall pro > killBoth scoreChange=SC_WALL
+    wall pro > killBoth scoreChange=SC_WALL soundSrc=assets/explosion.wav
     #pro wall > transformTo stype=pickaxe
-    gold avatar > killSprite scoreChange=SC_GOLD
+    gold avatar > killSprite scoreChange=SC_GOLD soundSrc=assets/pickCoin.wav
 
     #tank pro > bounceForward
-    pro tank > killSprite
+    pro tank > killSprite soundSrc=assets/exploFail.wav
 
-    pickaxe avatar > collectResource scoreChange=SC_PAXE
+    pickaxe avatar > collectResource scoreChange=SC_PAXE soundSrc=assets/pickAxe02.wav
     pickaxe avatar > killSprite
 
     pro EOS > wrapAround
 
-    wall tank > killSprite
+    wall tank > killSprite soundSrc=assets/explosion.wav
 
     movable wall > stepBack
     movable EOS > wrapAround
-    goal avatar > killSprite
+    goal avatar > killSprite soundSrc=assets/win.ogg
     #enemy enemy > stepBack
-    avatar tank > killSprite scoreChange=-100
+    avatar tank > killSprite scoreChange=-100 soundSrc=assets/lose.wav
 
     #pickaxe flight timer
     pcq floor > transformIfCount stype=pca stypeCount=pro geq=1

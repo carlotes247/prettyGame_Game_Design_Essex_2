@@ -118,7 +118,7 @@ public class TestGameSpace {
             trial = "B";
             }
         } else {
-            levelIdx = 1;
+//            levelIdx = 1;
         }
 //        dm.printValues(individual);
 
