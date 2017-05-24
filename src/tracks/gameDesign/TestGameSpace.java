@@ -107,10 +107,8 @@ public class TestGameSpace {
 
         if (trialA) {
             individual = new int[]{4,1,2,0,0,3,2,0};
-            trial = "A";
         } else {
             individual = new int[]{2,3,2,2,1,3,1,0};
-            trial = "B";
         }
 
         if (saveActions) {
@@ -120,9 +118,9 @@ public class TestGameSpace {
             trial = "B";
             }
         } else {
-//            levelIdx = 1;
+            levelIdx = 1;
         }
-        dm.printValues(individual);
+//        dm.printValues(individual);
 
 
         String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
