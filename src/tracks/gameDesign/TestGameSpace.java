@@ -45,15 +45,17 @@ public class TestGameSpace {
         /**
          * PARTICIPANT UNIQUE ID.
          */
-        long player = 0;
+        long player = 52400;
 
 
         /**
          * Set to true if trial A, false if trial B.
          */
+//        boolean saveActions = true;
         boolean saveActions = false;
+
         boolean trialA = true;
-//        boolean trialB = !(trialA);
+//        boolean trialA = false;
 
 
 
