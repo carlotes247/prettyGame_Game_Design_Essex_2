@@ -87,18 +87,32 @@ public class TestGameSpace {
          * Final/Alltime worst -- -1407.625: 2,3,2,2,1,3,1,0
          */
 
-        individual = new int[]{2,2,0,3,1,4,0,0};
-        System.out.println("Final best: ");
+        dm.printDimensions();
+//
+//
+//        individual = new int[]{4,1,2,0,0,3,2,0};
+//        System.out.println("Final best (wrong order?): ");
+//        evaluate(individual,dm,game,level1,interactorController,simpleController);
+//
+//        individual = new int[]{0,0,3,0,0,3,1,3};
+//        System.out.println("Alltime best (wrong order?): ");
+//        evaluate(individual,dm,game,level1,interactorController,simpleController);
+//
+        individual = new int[]{2,3,2,2,1,3,1,0};
+        System.out.println("Worst (wrong order?): ");
         evaluate(individual,dm,game,level1,interactorController,simpleController);
 
-        individual = new int[]{0,1,3,3,3,0,0,0};
-        System.out.println("Alltime best: ");
-        evaluate(individual,dm,game,level1,interactorController,simpleController);
+//        individual = new int[]{2,2,0,3,1,4,0,0};
+//        System.out.println("Final best: ");
+//        evaluate(individual,dm,game,level1,interactorController,simpleController);
 
+//        individual = new int[]{0,1,3,3,3,0,0,0};
+//        System.out.println("Alltime best: ");
+//        evaluate(individual,dm,game,level1,interactorController,simpleController);
+//
         individual = new int[]{1,2,0,3,3,2,2,1};
         System.out.println("Worst: ");
         evaluate(individual,dm,game,level1,interactorController,simpleController);
-
 
 //        tracks.singlePlayer.advanced.interactor.Agent.heuristic = 1;
 //        dm.runOneGame(individual, game, level1, visuals, interactorController, recordActionsFile, seed, 0);
@@ -163,6 +177,7 @@ public class TestGameSpace {
             double totWin = 0;
             double totSc = 0;
             for (int j = 0; j < resampling; j++) {
+                System.out.println(j);
                 if (i == 0) //set seed, keep for all algorithms
                     seed[j] = new Random().nextInt();
                 scores[i] = dm.runOneGame(individual, game, level1, false, playController, null, seed[j], 0);
@@ -178,6 +193,8 @@ public class TestGameSpace {
             else
                 value += totWin*bonus + totSc;
         }
+
+        System.out.println("fitness: " + value);
 
         return value;
     }

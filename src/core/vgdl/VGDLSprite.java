@@ -500,7 +500,7 @@ public abstract class VGDLSprite {
             else
                 allImages = images.get(Types.v2DirStr(orientation.getVector()));
 
-            if (allImages.size() > 0){
+            if (allImages != null && allImages.size() > 0){
                 currentFrame = (currentFrame + 1) % allImages.size();
                 frameRemaining = frameRate;
                 image = allImages.get(currentFrame);
