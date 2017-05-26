@@ -1,0 +1,18 @@
+Code access: https://github.com/carlotes247/prettyGame_Game_Design_Essex_2/
+
+Master branch: the 2 games evolved. Run class tracks.gameDesign.TestGameSpace.java
+- to play tutorial level: set variable saveActions to false
+- to play version A: set variable **saveActions** to true and variable **trialA** to true.
+- to play version B: set variable **saveActions** to true and variable **trialA** to false.
+
+automatic-tuning branch: the code for game evolution. 
+- Run class RHEA.Agent.Java for evolution.
+	- main method: must set the DesignMachine instance, then call init_pop(dims) and run() methods. The **dims** argument is an array containing the number of dimensions for each parameter.
+- Parameters for the algorithm can be set in class RHEA.utils.ParameterSet.java
+- Validation of the individuals can be run in class tracks.gameDesign.TestGameSpace.java (there are 2 versions of the individuals provided, those printing "wrong order?" being the individuals evolved by the algorithm - it appears that the order in which parameters are received by the DesignMachine class differs between Java versions, so the parameters should be reordered following the order in the paper if the order printed is different.)
+
+**log** folder in the repository: all gameplay logs from human trials
+**results** folder in the repository: all results from game evolution (and user trial groups)
+
+- Survey used in user trials: https://drive.google.com/open?id=1JvDIXV1gmX09QwYUE2JYgA10qeO8GwM2OIM4E6nZX-k
+- Survey responses in Excel format: https://drive.google.com/open?id=1K_f3yQ28xAE5mtB_6RW3v97T1HMKwNtPwDVA-6nZwy8
